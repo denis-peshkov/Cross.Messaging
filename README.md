@@ -1,16 +1,16 @@
-[![License](https://img.shields.io/github/license/denis-peshkov/Cross-Messaging)](LICENSE)
-[![GitHub Release Date](https://img.shields.io/github/release-date/denis-peshkov/Cross-Messaging?label=released)](https://github.com/denis-peshkov/Cross-Messaging/releases)
+[![License](https://img.shields.io/github/license/denis-peshkov/Cross.Messaging)](LICENSE)
+[![GitHub Release Date](https://img.shields.io/github/release-date/denis-peshkov/Cross.Messaging?label=released)](https://github.com/denis-peshkov/Cross.Messaging/releases)
 [![NuGetVersion](https://img.shields.io/nuget/v/Cross.Messaging.svg)](https://nuget.org/packages/Cross.Messaging/)
 [![NugetDownloads](https://img.shields.io/nuget/dt/Cross.Messaging.svg)](https://nuget.org/packages/Cross.Messaging/)
-[![issues](https://img.shields.io/github/issues/denis-peshkov/Cross-Messaging)](https://github.com/denis-peshkov/Cross-Messaging/issues)
-[![.NET PR](https://github.com/denis-peshkov/Cross-Messaging/actions/workflows/dotnet.yml/badge.svg?event=pull_request)](https://github.com/denis-peshkov/Cross-Messaging/actions/workflows/dotnet.yml)
+[![issues](https://img.shields.io/github/issues/denis-peshkov/Cross.Messaging)](https://github.com/denis-peshkov/Cross.Messaging/issues)
+[![.NET PR](https://github.com/denis-peshkov/Cross.Messaging/actions/workflows/dotnet.yml/badge.svg?event=pull_request)](https://github.com/denis-peshkov/Cross.Messaging/actions/workflows/dotnet.yml)
 
-![Size](https://img.shields.io/github/repo-size/denis-peshkov/Cross-Messaging)
-[![GitHub contributors](https://img.shields.io/github/contributors/denis-peshkov/Cross-Messaging)](https://github.com/denis-peshkov/Cross-Messaging/contributors)
-[![GitHub commits since latest release (by date)](https://img.shields.io/github/commits-since/denis-peshkov/Cross-Messaging/latest?label=new+commits)](https://github.com/denis-peshkov/Cross-Messaging/commits/master)
-![Activity](https://img.shields.io/github/commit-activity/w/denis-peshkov/Cross-Messaging)
-![Activity](https://img.shields.io/github/commit-activity/m/denis-peshkov/Cross-Messaging)
-![Activity](https://img.shields.io/github/commit-activity/y/denis-peshkov/Cross-Messaging)
+![Size](https://img.shields.io/github/repo-size/denis-peshkov/Cross.Messaging)
+[![GitHub contributors](https://img.shields.io/github/contributors/denis-peshkov/Cross.Messaging)](https://github.com/denis-peshkov/Cross.Messaging/contributors)
+[![GitHub commits since latest release (by date)](https://img.shields.io/github/commits-since/denis-peshkov/Cross.Messaging/latest?label=new+commits)](https://github.com/denis-peshkov/Cross.Messaging/commits/master)
+![Activity](https://img.shields.io/github/commit-activity/w/denis-peshkov/Cross.Messaging)
+![Activity](https://img.shields.io/github/commit-activity/m/denis-peshkov/Cross.Messaging)
+![Activity](https://img.shields.io/github/commit-activity/y/denis-peshkov/Cross.Messaging)
 
 # Cross.Messaging
 
