@@ -9,3 +9,6 @@ v1.1.0 - 10 Apr 2026
 - Breaking: appsettings section renamed to `MessagingEmail` (was `NotificationEmail`).
 - Email: shared `EmailSendLogging`; more tests (including SMTP via netDumbster).
 - README / nuspec: repo URL `Cross.Messaging`, sample config updated.
+
+v1.1.1 - 10 Apr 2026
+- README: sample config updated.
