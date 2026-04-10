@@ -6,6 +6,7 @@ on:
   push:
     branches:
       - master
+      - dev
       - release/*
       - hotfix/*
   pull_request:
@@ -20,7 +21,7 @@ jobs:
 
     env:
       BUILD_CONFIG: 'Release'
-      SOLUTION: 'Cross.CORS.slnx'
+      SOLUTION: 'Cross.Messaging.slnx'
 
     runs-on: ubuntu-22.04 # ubuntu-latest
 
@@ -66,9 +67,9 @@ jobs:
             -p:FileVersion=${GitVersion_AssemblySemFileVer} \
             -p:InformationalVersion="${GitVersion_InformationalVersion}" \
             -p:Company="Denis Peshkov" \
-            -p:Product="Cross.CORS" \
-            -p:Description="ASP.NET Core library for configuring Cross-Origin Resource Sharing (CORS) via the [AllowCrossOriginResourceSharing] attribute and global CorsConfig configuration." \
-            -p:RepositoryUrl="https://github.com/denis-peshkov/Cross.CORS.git" \
+            -p:Product="Cross.Messaging" \
+            -p:Description="Cross.Messaging: helpers and services for sending notifications (email and SMS) and Telegram-related types with DI-friendly configuration." \
+            -p:RepositoryUrl="https://github.com/denis-peshkov/Cross.Messaging.git" \
             -p:RepositoryType=git \
             -p:CLSCompliant=true \
             -p:NeutralLanguage=en
@@ -89,16 +90,16 @@ jobs:
         with:
           args: >
             -Dsonar.organization=peshkov
-            -Dsonar.projectKey=Cross.CORS
+            -Dsonar.projectKey=Cross.Messaging
             -Dsonar.cs.opencover.reportsPaths=TestResults/**/coverage.opencover.xml
-            -Dsonar.sources=Cross.CORS/
-            -Dsonar.tests=Cross.CORS.Tests/
+            -Dsonar.sources=Cross.Messaging/
+            -Dsonar.tests=Cross.Messaging.Tests/
             -Dsonar.verbose=true
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
       - name: Nuget Pack
-        run: nuget pack _nuget/config.nuspec -Symbols -Version ${{ env.semVer }}
+        run: nuget pack Cross.Messaging/config.nuspec -Symbols -Version ${{ steps.gitversion.outputs.semVer }}
 
       - name: Create git Tag
         if: ${{ contains('refs/heads/master', github.ref) || contains('refs/heads/release', github.ref) || contains('refs/heads/hotfix', github.ref) }}
@@ -115,4 +116,4 @@ jobs:
 
       - name: Nuget Push
         if: ${{ !startsWith(github.ref, 'refs/pull') }}
-        run: nuget push **/Cross.CORS.${{ env.semVer }}.symbols.nupkg -ApiKey ${{ secrets.NUGET_API_KEY }} -Source "https://api.nuget.org/v3/index.json" -SkipDuplicate
+        run: nuget push **/Cross.Messaging.${{ env.semVer }}.symbols.nupkg -ApiKey ${{ secrets.NUGET_API_KEY }} -Source "https://api.nuget.org/v3/index.json" -SkipDuplicate
