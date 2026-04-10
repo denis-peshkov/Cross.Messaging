@@ -2,6 +2,7 @@
 [![GitHub Release Date](https://img.shields.io/github/release-date/denis-peshkov/Cross.Messaging?label=released)](https://github.com/denis-peshkov/Cross.Messaging/releases)
 [![NuGetVersion](https://img.shields.io/nuget/v/Cross.Messaging.svg)](https://nuget.org/packages/Cross.Messaging/)
 [![NugetDownloads](https://img.shields.io/nuget/dt/Cross.Messaging.svg)](https://nuget.org/packages/Cross.Messaging/)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=Cross.Messaging&metric=coverage)](https://sonarcloud.io/summary/new_code?id=Cross.Messaging)
 [![issues](https://img.shields.io/github/issues/denis-peshkov/Cross.Messaging)](https://github.com/denis-peshkov/Cross.Messaging/issues)
 [![.NET PR](https://github.com/denis-peshkov/Cross.Messaging/actions/workflows/dotnet.yml/badge.svg?event=pull_request)](https://github.com/denis-peshkov/Cross.Messaging/actions/workflows/dotnet.yml)
 
