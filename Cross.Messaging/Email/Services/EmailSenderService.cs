@@ -66,6 +66,7 @@ public class EmailSenderService : IEmailSenderService
         message.From.Add(new MailboxAddress(_options.FromUserName, _options.FromUserAddress));
         message.To.Add(new MailboxAddress(toName, toEmail));
         message.Subject = subject;
+        // message.ReplyTo.Add(new MailboxAddress(_options.FromUserName, _options.FromUserAddress));
 
         var builder = new BodyBuilder
         {
@@ -73,6 +74,7 @@ public class EmailSenderService : IEmailSenderService
             HtmlBody = htmlBody,
         };
 
+        // Note: mail clients choose whether to show HTML or plain text.
         message.Body = builder.ToMessageBody();
 
         using var smtp = new MailKit.Net.Smtp.SmtpClient();

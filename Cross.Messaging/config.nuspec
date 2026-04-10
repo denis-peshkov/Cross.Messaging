@@ -14,7 +14,9 @@
     <license type="file">LICENSE</license>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <releaseNotes><![CDATA[
-Cross.Messaging: cross-channel notification building blocks.
+- Breaking: appsettings section renamed to `MessagingEmail` (was `NotificationEmail`).
+- Email: shared `EmailSendLogging`; more tests (including SMTP via netDumbster).
+- README / nuspec: repo URL `Cross.Messaging`, sample config updated.
 ]]></releaseNotes>
     <dependencies>
       <group targetFramework="netstandard2.1">
