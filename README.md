@@ -14,12 +14,14 @@
 
 # Cross.Messaging
 
-A set of libraries for sending notifications across multiple channels.
+A set of libraries for sending messages across multiple channels.
 
 Current focus:
 - Email (`Cross.Messaging.Email.*`)
 - SMS (`Cross.Messaging.Sms.*`)
 - Telegram (`Cross.Messaging.Telegram.*`)
+- Viber (`Cross.Messaging.Viber.*`)
+- WatsApp (`Cross.Messaging.WatsApp.*`)
 
 **Supported targets:** .NET Standard 2.1, .NET 6, .NET 7, .NET 8, .NET 9, .NET 10
 
