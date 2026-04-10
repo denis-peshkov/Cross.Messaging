@@ -1,0 +1,84 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.1;net6.0;net7.0;net8.0;net9.0;net10.0</TargetFrameworks>
+    <LangVersion>11</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <EnablePreviewFeatures>false</EnablePreviewFeatures>
+    <Configurations>Debug;Release</Configurations>
+    <Platforms>AnyCPU</Platforms>
+    <NoWarn>1701;1702;1591;CS8618;NU1701;</NoWarn>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.1'">
+    <MicrosoftExtensionsConfiguration>8.0.0</MicrosoftExtensionsConfiguration>
+    <MicrosoftExtensionsDependencyInjectionAbstractions>8.0.0</MicrosoftExtensionsDependencyInjectionAbstractions>
+    <MicrosoftExtensionsLoggingAbstractions>8.0.0</MicrosoftExtensionsLoggingAbstractions>
+    <MicrosoftExtensionsOptions>8.0.0</MicrosoftExtensionsOptions>
+    <MicrosoftExtensionsOptionsConfigurationExtensions>8.0.0</MicrosoftExtensionsOptionsConfigurationExtensions>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net6.0'">
+    <MicrosoftExtensionsConfiguration>8.0.0</MicrosoftExtensionsConfiguration>
+    <MicrosoftExtensionsDependencyInjectionAbstractions>8.0.0</MicrosoftExtensionsDependencyInjectionAbstractions>
+    <MicrosoftExtensionsLoggingAbstractions>8.0.0</MicrosoftExtensionsLoggingAbstractions>
+    <MicrosoftExtensionsOptions>8.0.0</MicrosoftExtensionsOptions>
+    <MicrosoftExtensionsOptionsConfigurationExtensions>8.0.0</MicrosoftExtensionsOptionsConfigurationExtensions>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net7.0'">
+    <MicrosoftExtensionsConfiguration>8.0.0</MicrosoftExtensionsConfiguration>
+    <MicrosoftExtensionsDependencyInjectionAbstractions>8.0.0</MicrosoftExtensionsDependencyInjectionAbstractions>
+    <MicrosoftExtensionsLoggingAbstractions>8.0.0</MicrosoftExtensionsLoggingAbstractions>
+    <MicrosoftExtensionsOptions>8.0.0</MicrosoftExtensionsOptions>
+    <MicrosoftExtensionsOptionsConfigurationExtensions>8.0.0</MicrosoftExtensionsOptionsConfigurationExtensions>
+    <MicrosoftAspNetCoreOpenApi>7.0.20</MicrosoftAspNetCoreOpenApi>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net8.0'">
+    <MicrosoftExtensionsConfiguration>8.0.0</MicrosoftExtensionsConfiguration>
+    <MicrosoftExtensionsDependencyInjectionAbstractions>8.0.0</MicrosoftExtensionsDependencyInjectionAbstractions>
+    <MicrosoftExtensionsLoggingAbstractions>8.0.0</MicrosoftExtensionsLoggingAbstractions>
+    <MicrosoftExtensionsOptions>8.0.0</MicrosoftExtensionsOptions>
+    <MicrosoftExtensionsOptionsConfigurationExtensions>8.0.0</MicrosoftExtensionsOptionsConfigurationExtensions>
+    <MicrosoftAspNetCoreOpenApi>8.0.25</MicrosoftAspNetCoreOpenApi>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net9.0'">
+    <MicrosoftExtensionsConfiguration>9.0.0</MicrosoftExtensionsConfiguration>
+    <MicrosoftExtensionsDependencyInjectionAbstractions>9.0.0</MicrosoftExtensionsDependencyInjectionAbstractions>
+    <MicrosoftExtensionsLoggingAbstractions>9.0.0</MicrosoftExtensionsLoggingAbstractions>
+    <MicrosoftExtensionsOptions>9.0.0</MicrosoftExtensionsOptions>
+    <MicrosoftExtensionsOptionsConfigurationExtensions>9.0.0</MicrosoftExtensionsOptionsConfigurationExtensions>
+    <MicrosoftAspNetCoreOpenApi>9.0.14</MicrosoftAspNetCoreOpenApi>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net10.0'">
+    <MicrosoftExtensionsConfiguration>10.0.0</MicrosoftExtensionsConfiguration>
+    <MicrosoftExtensionsDependencyInjectionAbstractions>10.0.0</MicrosoftExtensionsDependencyInjectionAbstractions>
+    <MicrosoftExtensionsLoggingAbstractions>10.0.0</MicrosoftExtensionsLoggingAbstractions>
+    <MicrosoftExtensionsOptions>10.0.0</MicrosoftExtensionsOptions>
+    <MicrosoftExtensionsOptionsConfigurationExtensions>10.0.0</MicrosoftExtensionsOptionsConfigurationExtensions>
+    <MicrosoftAspNetCoreOpenApi>10.0.5</MicrosoftAspNetCoreOpenApi>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Viber\" />
+    <Folder Include="WatsApp\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MailKit" Version="4.14.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="$(MicrosoftExtensionsConfiguration)" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="$(MicrosoftExtensionsDependencyInjectionAbstractions)" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="$(MicrosoftExtensionsLoggingAbstractions)" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="$(MicrosoftExtensionsOptions)" />
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="$(MicrosoftExtensionsOptionsConfigurationExtensions)" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net7.0' Or '$(TargetFramework)' == 'net8.0' Or '$(TargetFramework)' == 'net9.0' Or '$(TargetFramework)' == 'net10.0'">
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="$(MicrosoftAspNetCoreOpenApi)" />
+  </ItemGroup>
+
+</Project>

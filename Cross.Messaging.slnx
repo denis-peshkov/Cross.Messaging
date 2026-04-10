@@ -1,0 +1,16 @@
+﻿<Solution>
+  <Folder Name="/.github/" />
+  <Folder Name="/.github/workflows/">
+    <File Path=".github\workflows\dotnet.yml" />
+  </Folder>
+  <Folder Name="/assets/">
+    <File Path=".editorconfig" />
+    <File Path=".gitattributes" />
+    <File Path=".gitignore" />
+    <File Path="LICENSE" />
+    <File Path="README.md" />
+    <File Path="GitVersion.yml" />
+  </Folder>
+  <Project Path="Cross.Messaging.Tests\Cross.Messaging.Tests.csproj" />
+  <Project Path="Cross.Messaging\Cross.Messaging.csproj" />
+</Solution>
