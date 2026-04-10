@@ -1,0 +1,12 @@
+Release Notes - Cross.Messaging
+
+https://github.com/denis-peshkov/Cross.Messaging/releases
+
+v1.0.0 - 10 Apr 2026
+- Initial version.
+
+v1.1.0 - 10 Apr 2026
+- Breaking: appsettings section renamed to `MessagingEmail` (was `NotificationEmail`).
+- Email: shared `EmailSendLogging`; more tests (including SMTP via netDumbster).
+- `InternalsVisibleTo` → `Properties/AssemblyInfo.cs`.
+- README / nuspec: repo URL `Cross.Messaging`, sample config updated.
