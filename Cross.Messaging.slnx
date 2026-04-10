@@ -10,6 +10,7 @@
     <File Path="LICENSE" />
     <File Path="README.md" />
     <File Path="GitVersion.yml" />
+    <File Path="ReleaseNotes.txt" />
   </Folder>
   <Project Path="Cross.Messaging.Tests\Cross.Messaging.Tests.csproj" />
   <Project Path="Cross.Messaging\Cross.Messaging.csproj" />

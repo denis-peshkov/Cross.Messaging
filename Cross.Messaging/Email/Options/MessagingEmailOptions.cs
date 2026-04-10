@@ -2,7 +2,7 @@ namespace Cross.Messaging.Email.Options;
 
 public class MessagingEmailOptions
 {
-    public const string SectionName = "NotificationEmail";
+    public const string SectionName = "MessagingEmail";
 
     public string SmtpHost { get; set; }
 

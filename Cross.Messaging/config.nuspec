@@ -6,15 +6,17 @@
     <authors>Denis Peshkov</authors>
     <owners>Denis Peshkov</owners>
     <copyright>Copyright Denis Peshkov</copyright>
-    <projectUrl>https://github.com/denis-peshkov/Cross-Messaging</projectUrl>
-    <repository type="git" url="https://github.com/denis-peshkov/Cross-Messaging.git" />
-    <description>Cross.Messaging: helpers and services for sending notifications (email, SMS) and Telegram-related types, with DI-friendly configuration.</description>
+    <projectUrl>https://github.com/denis-peshkov/Cross.Messaging</projectUrl>
+    <repository type="git" url="https://github.com/denis-peshkov/Cross.Messaging.git" />
+    <description>Helpers and services for sending notifications (email, SMS) and Telegram-related types, with DI-friendly configuration.</description>
     <tags>Email SMS Telegram Messaging SMTP MailKit Configuration DependencyInjection NetCore</tags>
     <readme>README.md</readme>
     <license type="file">LICENSE</license>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <releaseNotes><![CDATA[
-Cross.Messaging: cross-channel notification building blocks.
+- Breaking: appsettings section renamed to `MessagingEmail` (was `NotificationEmail`).
+- Email: shared `EmailSendLogging`; more tests (including SMTP via netDumbster).
+- README / nuspec: repo URL `Cross.Messaging`, sample config updated.
 ]]></releaseNotes>
     <dependencies>
       <group targetFramework="netstandard2.1">
