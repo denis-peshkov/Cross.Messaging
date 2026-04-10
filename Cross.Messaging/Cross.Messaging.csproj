@@ -1,0 +1,82 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.1;net6.0;net7.0;net8.0;net9.0;net10.0</TargetFrameworks>
+    <LangVersion>11</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <EnablePreviewFeatures>false</EnablePreviewFeatures>
+    <Configurations>Debug;Release</Configurations>
+    <Platforms>AnyCPU</Platforms>
+    <NoWarn>1701;1702;1591;CS8618;</NoWarn>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.1'">
+    <MailKit>4.15.1</MailKit>
+    <MicrosoftExtensionsConfiguration>8.0.0</MicrosoftExtensionsConfiguration>
+    <MicrosoftExtensionsDependencyInjectionAbstractions>8.0.2</MicrosoftExtensionsDependencyInjectionAbstractions>
+    <MicrosoftExtensionsLoggingAbstractions>8.0.3</MicrosoftExtensionsLoggingAbstractions>
+    <MicrosoftExtensionsOptions>8.0.2</MicrosoftExtensionsOptions>
+    <MicrosoftExtensionsOptionsConfigurationExtensions>8.0.0</MicrosoftExtensionsOptionsConfigurationExtensions>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net6.0'">
+    <MailKit>4.15.1</MailKit>
+    <MicrosoftExtensionsConfiguration>8.0.0</MicrosoftExtensionsConfiguration>
+    <MicrosoftExtensionsDependencyInjectionAbstractions>8.0.2</MicrosoftExtensionsDependencyInjectionAbstractions>
+    <MicrosoftExtensionsLoggingAbstractions>8.0.3</MicrosoftExtensionsLoggingAbstractions>
+    <MicrosoftExtensionsOptions>8.0.2</MicrosoftExtensionsOptions>
+    <MicrosoftExtensionsOptionsConfigurationExtensions>8.0.0</MicrosoftExtensionsOptionsConfigurationExtensions>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net7.0'">
+    <MailKit>4.15.1</MailKit>
+    <MicrosoftExtensionsConfiguration>8.0.0</MicrosoftExtensionsConfiguration>
+    <MicrosoftExtensionsDependencyInjectionAbstractions>8.0.2</MicrosoftExtensionsDependencyInjectionAbstractions>
+    <MicrosoftExtensionsLoggingAbstractions>8.0.3</MicrosoftExtensionsLoggingAbstractions>
+    <MicrosoftExtensionsOptions>8.0.2</MicrosoftExtensionsOptions>
+    <MicrosoftExtensionsOptionsConfigurationExtensions>8.0.0</MicrosoftExtensionsOptionsConfigurationExtensions>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net8.0'">
+    <MailKit>4.15.1</MailKit>
+    <MicrosoftExtensionsConfiguration>8.0.0</MicrosoftExtensionsConfiguration>
+    <MicrosoftExtensionsDependencyInjectionAbstractions>8.0.2</MicrosoftExtensionsDependencyInjectionAbstractions>
+    <MicrosoftExtensionsLoggingAbstractions>8.0.3</MicrosoftExtensionsLoggingAbstractions>
+    <MicrosoftExtensionsOptions>8.0.2</MicrosoftExtensionsOptions>
+    <MicrosoftExtensionsOptionsConfigurationExtensions>8.0.0</MicrosoftExtensionsOptionsConfigurationExtensions>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net9.0'">
+    <MailKit>4.15.1</MailKit>
+    <MicrosoftExtensionsConfiguration>9.0.14</MicrosoftExtensionsConfiguration>
+    <MicrosoftExtensionsDependencyInjectionAbstractions>9.0.14</MicrosoftExtensionsDependencyInjectionAbstractions>
+    <MicrosoftExtensionsLoggingAbstractions>9.0.14</MicrosoftExtensionsLoggingAbstractions>
+    <MicrosoftExtensionsOptions>9.0.14</MicrosoftExtensionsOptions>
+    <MicrosoftExtensionsOptionsConfigurationExtensions>9.0.14</MicrosoftExtensionsOptionsConfigurationExtensions>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net10.0'">
+    <MailKit>4.15.1</MailKit>
+    <MicrosoftExtensionsConfiguration>10.0.5</MicrosoftExtensionsConfiguration>
+    <MicrosoftExtensionsDependencyInjectionAbstractions>10.0.5</MicrosoftExtensionsDependencyInjectionAbstractions>
+    <MicrosoftExtensionsLoggingAbstractions>10.0.5</MicrosoftExtensionsLoggingAbstractions>
+    <MicrosoftExtensionsOptions>10.0.5</MicrosoftExtensionsOptions>
+    <MicrosoftExtensionsOptionsConfigurationExtensions>10.0.5</MicrosoftExtensionsOptionsConfigurationExtensions>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Viber\" />
+    <Folder Include="WatsApp\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MailKit" Version="$(MailKit)" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="$(MicrosoftExtensionsConfiguration)" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="$(MicrosoftExtensionsDependencyInjectionAbstractions)" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="$(MicrosoftExtensionsLoggingAbstractions)" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="$(MicrosoftExtensionsOptions)" />
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="$(MicrosoftExtensionsOptionsConfigurationExtensions)" />
+  </ItemGroup>
+
+</Project>
