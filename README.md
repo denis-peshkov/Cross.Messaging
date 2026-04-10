@@ -21,8 +21,7 @@ Current focus:
 - SMS (`Cross.Messaging.Sms.*`)
 - Telegram (`Cross.Messaging.Telegram.*`)
 
-
-**Supported frameworks:** .NET 6, .NET 7, .NET 8, .NET 9, .NET 10
+**Supported targets:** .NET Standard 2.1, .NET 6, .NET 7, .NET 8, .NET 9, .NET 10
 
 ## Install NuGet package
 
@@ -70,17 +69,17 @@ services.AddEmailSender(configuration);
 
 ## Unit tests
 
-Используется соглашение именования **Given_When_Then**:
+Tests use the **Given_When_Then** naming style:
 
-- **Given** — контекст/предусловия.
-- **When** — действие.
-- **Then** — ожидаемый результат.
+- **Given** — context and preconditions.
+- **When** — the action under test.
+- **Then** — the expected outcome.
 
-Пример: `Given_ExistingUser_When_RequestCode_Then_SendsCodeAndReturnsLastCode`.
+Example: `Given_ValidSmtpOptions_When_SendAsync_Then_UsesConfiguredHost`.
 
-Тесты потоков и шагов расположены в `Cross.Identity.UnitTests/Identity/` (FlowTests, StepTests, StepFactoryTests).
+Tests live in `Cross.Messaging.Tests/` (for example `Email/`, `Sms/`).
 
-## Code Coverage
+## Code coverage
 
 Run tests with code coverage (`opencover`):
 
