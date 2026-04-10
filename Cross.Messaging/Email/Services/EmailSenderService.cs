@@ -40,28 +40,19 @@ public class EmailSenderService : IEmailSenderService
             Subject = subject,
             Body = body,
             IsBodyHtml = true,
-            // ReplyToList = { new MailAddress() }
         };
 
-        try
-        {
-            #if NETSTANDARD2_1
-            await smtp.SendMailAsync(message);
-            #else
-            await smtp.SendMailAsync(message, cancellationToken);
-            #endif
-            _logger.LogInformation("Email sent to {Recipient}", toEmail);
-        }
-        catch (SmtpException ex)
-        {
-            _logger.LogError(ex, "SMTP error when sending email to {Recipient}", toEmail);
-            throw;
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Unexpected error when sending email to {Recipient}", toEmail);
-            throw;
-        }
+        await EmailSendLogging.RunSendAndLogAsync(
+            async () =>
+            {
+#if NETSTANDARD2_1
+                await smtp.SendMailAsync(message);
+#else
+                await smtp.SendMailAsync(message, cancellationToken);
+#endif
+            },
+            toEmail,
+            _logger);
     }
 
     public async Task SendAsync(string toName, string toEmail, string subject, string textBody, string htmlBody, CancellationToken cancellationToken)
@@ -75,7 +66,6 @@ public class EmailSenderService : IEmailSenderService
         message.From.Add(new MailboxAddress(_options.FromUserName, _options.FromUserAddress));
         message.To.Add(new MailboxAddress(toName, toEmail));
         message.Subject = subject;
-        // message.ReplyTo.Add(new MailboxAddress(_options.FromUserName, _options.FromUserAddress));
 
         var builder = new BodyBuilder
         {
@@ -83,7 +73,6 @@ public class EmailSenderService : IEmailSenderService
             HtmlBody = htmlBody,
         };
 
-        // Важно: почтовые клиенты сами выберут HTML или Text.
         message.Body = builder.ToMessageBody();
 
         using var smtp = new MailKit.Net.Smtp.SmtpClient();
@@ -92,18 +81,10 @@ public class EmailSenderService : IEmailSenderService
 
         try
         {
-            await smtp.SendAsync(message, cancellationToken);
-            _logger.LogInformation("Email sent to {Recipient}", toEmail);
-        }
-        catch (SmtpException ex)
-        {
-            _logger.LogError(ex, "SMTP error when sending email to {Recipient}", toEmail);
-            throw;
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Unexpected error when sending email to {Recipient}", toEmail);
-            throw;
+            await EmailSendLogging.RunSendAndLogAsync(
+                () => smtp.SendAsync(message, cancellationToken),
+                toEmail,
+                _logger);
         }
         finally
         {

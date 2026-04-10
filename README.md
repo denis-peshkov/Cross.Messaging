@@ -46,21 +46,21 @@ services.AddEmailSender(configuration);
 ```
 
 `AddEmailSender`:
-- binds the `NotificationEmail` configuration section to `MessagingEmailOptions`
+- binds the `MessagingEmail` configuration section to `MessagingEmailOptions`
 - registers `IEmailSenderService` -> `EmailSenderService` (scoped)
 
 ### Sample email configuration
 
 ```json
 {
-  "NotificationEmail": {
+  "MessagingEmail": {
     "SmtpHost": "smtp.example.com",
     "SmtpPort": 587,
     "UseSsl": true,
     "SecureSocket": "StartTls",
     "SmtpLogin": "login",
     "SmtpPassword": "password",
-    "FromUserName": "App Notifications",
+    "FromUserName": "App Messaging",
     "FromUserAddress": "no-reply@example.com",
     "RecipientOverride": ""
   }
