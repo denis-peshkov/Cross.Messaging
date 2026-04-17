@@ -5,6 +5,14 @@ namespace Cross.Messaging.Email.Services;
 /// </summary>
 internal static class EmailSendLogging
 {
+    /// <summary>
+    /// Executes the send operation and writes success/error logs with recipient context.
+    /// </summary>
+    /// <param name="send">Asynchronous send operation.</param>
+    /// <param name="recipientEmail">Recipient email used for log context.</param>
+    /// <param name="logger">Logger instance.</param>
+    /// <returns>A task representing the asynchronous operation.</returns>
+    /// <exception cref="SmtpException">Thrown when SMTP-specific errors occur.</exception>
     internal static async Task RunSendAndLogAsync(
         Func<Task> send,
         string recipientEmail,

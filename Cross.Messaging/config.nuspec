@@ -2,10 +2,10 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
   <metadata>
     <id>Cross.Messaging</id>
-    <version>$version$</version>
+    <version>0.0.0</version>
     <authors>Denis Peshkov</authors>
     <owners>Denis Peshkov</owners>
-    <copyright>Copyright Denis Peshkov</copyright>
+    <copyright>Copyright 2026 Denis Peshkov</copyright>
     <projectUrl>https://github.com/denis-peshkov/Cross.Messaging</projectUrl>
     <repository type="git" url="https://github.com/denis-peshkov/Cross.Messaging.git" />
     <description>Helpers and services for sending notifications (email, SMS) and Telegram-related types, with DI-friendly configuration.</description>
@@ -14,9 +14,8 @@
     <license type="file">LICENSE</license>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <releaseNotes><![CDATA[
-- Breaking: appsettings section renamed to `MessagingEmail` (was `NotificationEmail`).
-- Email: shared `EmailSendLogging`; more tests (including SMTP via netDumbster).
-- README / nuspec: repo URL `Cross.Messaging`, sample config updated.
+- Added XML documentation to messaging services.
+- Email: added `RecipientOverride` support to override all outgoing recipient addresses when configured.
 ]]></releaseNotes>
     <dependencies>
       <group targetFramework="netstandard2.1">

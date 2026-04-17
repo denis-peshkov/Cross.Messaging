@@ -121,4 +121,5 @@ public sealed class EmailSenderServiceTests
         options.Setup(x => x.Value).Returns(value);
         return options.Object;
     }
+
 }

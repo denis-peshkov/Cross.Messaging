@@ -1,12 +1,34 @@
 namespace Cross.Messaging.Telegram.Enum;
 
+/// <summary>
+/// Telegram channel/chat classification used by the messaging library.
+/// </summary>
 public enum TelegramChannelTypeEnum
 {
+    /// <summary>
+    /// Public channel or chat.
+    /// </summary>
     Public = 0,
+
+    /// <summary>
+    /// Private channel or chat.
+    /// </summary>
     Private = 1,
+
+    /// <summary>
+    /// Group chat.
+    /// </summary>
     Group = 2,
+
+    /// <summary>
+    /// Supergroup chat.
+    /// </summary>
     Supergroup = 3,
-    Bot = 4
+
+    /// <summary>
+    /// Bot conversation.
+    /// </summary>
+    Bot = 4,
 }
 
 

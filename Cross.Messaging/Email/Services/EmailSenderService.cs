@@ -1,10 +1,18 @@
 namespace Cross.Messaging.Email.Services;
 
+/// <summary>
+/// Default SMTP-based implementation of <see cref="IEmailSenderService" />.
+/// </summary>
 public class EmailSenderService : IEmailSenderService
 {
     private readonly ILogger<EmailSenderService> _logger;
     private readonly MessagingEmailOptions _options;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="EmailSenderService" /> class.
+    /// </summary>
+    /// <param name="logger">Logger for send operation events and errors.</param>
+    /// <param name="options">Snapshot with email sender configuration.</param>
     public EmailSenderService(
         ILogger<EmailSenderService> logger,
         IOptionsSnapshot<MessagingEmailOptions> options)
@@ -13,11 +21,25 @@ public class EmailSenderService : IEmailSenderService
         _options = options.Value;
     }
 
+    /// <inheritdoc />
     public async Task SendAsync(string toName, string toEmail, string subject, string body, CancellationToken cancellationToken)
     {
         if (string.IsNullOrWhiteSpace(toEmail))
         {
             throw new ArgumentException("Recipient email is required.", nameof(toEmail));
+        }
+        if (string.IsNullOrWhiteSpace(subject))
+        {
+            throw new ArgumentException("Subject is required.", nameof(subject));
+        }
+        if (string.IsNullOrWhiteSpace(body))
+        {
+            throw new ArgumentException("Body is required.", nameof(body));
+        }
+
+        if (!string.IsNullOrWhiteSpace(_options.RecipientOverride))
+        {
+            toEmail = _options.RecipientOverride;
         }
 
         var fromAddress = new MailAddress(_options.FromUserAddress, _options.FromUserName);
@@ -55,11 +77,29 @@ public class EmailSenderService : IEmailSenderService
             _logger);
     }
 
+    /// <inheritdoc />
     public async Task SendAsync(string toName, string toEmail, string subject, string textBody, string htmlBody, CancellationToken cancellationToken)
     {
         if (string.IsNullOrWhiteSpace(toEmail))
         {
             throw new ArgumentException("Recipient email is required.", nameof(toEmail));
+        }
+        if (string.IsNullOrWhiteSpace(subject))
+        {
+            throw new ArgumentException("Subject is required.", nameof(subject));
+        }
+        if (string.IsNullOrWhiteSpace(textBody))
+        {
+            throw new ArgumentException("Text body is required.", nameof(textBody));
+        }
+        if (string.IsNullOrWhiteSpace(htmlBody))
+        {
+            throw new ArgumentException("HTML body is required.", nameof(htmlBody));
+        }
+
+        if (!string.IsNullOrWhiteSpace(_options.RecipientOverride))
+        {
+            toEmail = _options.RecipientOverride;
         }
 
         using var message = new MimeMessage();
@@ -93,4 +133,5 @@ public class EmailSenderService : IEmailSenderService
             await smtp.DisconnectAsync(true, cancellationToken);
         }
     }
+
 }
