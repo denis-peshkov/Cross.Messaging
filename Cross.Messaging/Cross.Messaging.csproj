@@ -13,7 +13,7 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.1'">
-    <MailKit>4.15.1</MailKit>
+    <MailKit>4.16.0</MailKit>
     <MicrosoftExtensionsConfiguration>8.0.0</MicrosoftExtensionsConfiguration>
     <MicrosoftExtensionsDependencyInjectionAbstractions>8.0.2</MicrosoftExtensionsDependencyInjectionAbstractions>
     <MicrosoftExtensionsLoggingAbstractions>8.0.3</MicrosoftExtensionsLoggingAbstractions>
@@ -22,7 +22,7 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'net6.0'">
-    <MailKit>4.15.1</MailKit>
+    <MailKit>4.16.0</MailKit>
     <MicrosoftExtensionsConfiguration>8.0.0</MicrosoftExtensionsConfiguration>
     <MicrosoftExtensionsDependencyInjectionAbstractions>8.0.2</MicrosoftExtensionsDependencyInjectionAbstractions>
     <MicrosoftExtensionsLoggingAbstractions>8.0.3</MicrosoftExtensionsLoggingAbstractions>
@@ -31,7 +31,7 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'net7.0'">
-    <MailKit>4.15.1</MailKit>
+    <MailKit>4.16.0</MailKit>
     <MicrosoftExtensionsConfiguration>8.0.0</MicrosoftExtensionsConfiguration>
     <MicrosoftExtensionsDependencyInjectionAbstractions>8.0.2</MicrosoftExtensionsDependencyInjectionAbstractions>
     <MicrosoftExtensionsLoggingAbstractions>8.0.3</MicrosoftExtensionsLoggingAbstractions>
@@ -40,7 +40,7 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'net8.0'">
-    <MailKit>4.15.1</MailKit>
+    <MailKit>4.16.0</MailKit>
     <MicrosoftExtensionsConfiguration>8.0.0</MicrosoftExtensionsConfiguration>
     <MicrosoftExtensionsDependencyInjectionAbstractions>8.0.2</MicrosoftExtensionsDependencyInjectionAbstractions>
     <MicrosoftExtensionsLoggingAbstractions>8.0.3</MicrosoftExtensionsLoggingAbstractions>
@@ -49,21 +49,21 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'net9.0'">
-    <MailKit>4.15.1</MailKit>
-    <MicrosoftExtensionsConfiguration>9.0.14</MicrosoftExtensionsConfiguration>
-    <MicrosoftExtensionsDependencyInjectionAbstractions>9.0.14</MicrosoftExtensionsDependencyInjectionAbstractions>
-    <MicrosoftExtensionsLoggingAbstractions>9.0.14</MicrosoftExtensionsLoggingAbstractions>
-    <MicrosoftExtensionsOptions>9.0.14</MicrosoftExtensionsOptions>
-    <MicrosoftExtensionsOptionsConfigurationExtensions>9.0.14</MicrosoftExtensionsOptionsConfigurationExtensions>
+    <MailKit>4.16.0</MailKit>
+    <MicrosoftExtensionsConfiguration>9.0.15</MicrosoftExtensionsConfiguration>
+    <MicrosoftExtensionsDependencyInjectionAbstractions>9.0.15</MicrosoftExtensionsDependencyInjectionAbstractions>
+    <MicrosoftExtensionsLoggingAbstractions>9.0.15</MicrosoftExtensionsLoggingAbstractions>
+    <MicrosoftExtensionsOptions>9.0.15</MicrosoftExtensionsOptions>
+    <MicrosoftExtensionsOptionsConfigurationExtensions>9.0.15</MicrosoftExtensionsOptionsConfigurationExtensions>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'net10.0'">
-    <MailKit>4.15.1</MailKit>
-    <MicrosoftExtensionsConfiguration>10.0.5</MicrosoftExtensionsConfiguration>
-    <MicrosoftExtensionsDependencyInjectionAbstractions>10.0.5</MicrosoftExtensionsDependencyInjectionAbstractions>
-    <MicrosoftExtensionsLoggingAbstractions>10.0.5</MicrosoftExtensionsLoggingAbstractions>
-    <MicrosoftExtensionsOptions>10.0.5</MicrosoftExtensionsOptions>
-    <MicrosoftExtensionsOptionsConfigurationExtensions>10.0.5</MicrosoftExtensionsOptionsConfigurationExtensions>
+    <MailKit>4.16.0</MailKit>
+    <MicrosoftExtensionsConfiguration>10.0.7</MicrosoftExtensionsConfiguration>
+    <MicrosoftExtensionsDependencyInjectionAbstractions>10.0.7</MicrosoftExtensionsDependencyInjectionAbstractions>
+    <MicrosoftExtensionsLoggingAbstractions>10.0.7</MicrosoftExtensionsLoggingAbstractions>
+    <MicrosoftExtensionsOptions>10.0.7</MicrosoftExtensionsOptions>
+    <MicrosoftExtensionsOptionsConfigurationExtensions>10.0.7</MicrosoftExtensionsOptionsConfigurationExtensions>
   </PropertyGroup>
 
   <ItemGroup>
@@ -79,7 +79,7 @@
     <PackageReference Include="Microsoft.Extensions.Options" Version="$(MicrosoftExtensionsOptions)" />
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="$(MicrosoftExtensionsOptionsConfigurationExtensions)" />
 
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="10.0.203" PrivateAssets="All" />
   </ItemGroup>
 
 </Project>

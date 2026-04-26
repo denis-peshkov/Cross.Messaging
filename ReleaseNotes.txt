@@ -14,5 +14,8 @@ v1.1.1 - 10 Apr 2026
 - README: sample config updated.
 
 v1.1.2 - 17 Apr 2026
-- add XML documentation to messaging services
+- Add XML documentation to messaging services.
 - Email: added `RecipientOverride` support to override all outgoing recipient addresses when configured.
+
+v1.1.3 - 26 Apr 2026
+- Upgrade dependencies.

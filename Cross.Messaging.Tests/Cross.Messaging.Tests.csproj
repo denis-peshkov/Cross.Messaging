@@ -18,32 +18,32 @@
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'net6.0'">
     <MicrosoftExtensionsConfiguration>8.0.0</MicrosoftExtensionsConfiguration>
-    <MicrosoftExtensionsConfigurationJson>8.0.0</MicrosoftExtensionsConfigurationJson>
-    <MicrosoftExtensionsDependencyInjection>8.0.0</MicrosoftExtensionsDependencyInjection>
+    <MicrosoftExtensionsConfigurationJson>8.0.1</MicrosoftExtensionsConfigurationJson>
+    <MicrosoftExtensionsDependencyInjection>8.0.1</MicrosoftExtensionsDependencyInjection>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'net7.0'">
     <MicrosoftExtensionsConfiguration>8.0.0</MicrosoftExtensionsConfiguration>
-    <MicrosoftExtensionsConfigurationJson>8.0.0</MicrosoftExtensionsConfigurationJson>
-    <MicrosoftExtensionsDependencyInjection>8.0.0</MicrosoftExtensionsDependencyInjection>
+    <MicrosoftExtensionsConfigurationJson>8.0.1</MicrosoftExtensionsConfigurationJson>
+    <MicrosoftExtensionsDependencyInjection>8.0.1</MicrosoftExtensionsDependencyInjection>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'net8.0'">
     <MicrosoftExtensionsConfiguration>8.0.0</MicrosoftExtensionsConfiguration>
-    <MicrosoftExtensionsConfigurationJson>8.0.0</MicrosoftExtensionsConfigurationJson>
-    <MicrosoftExtensionsDependencyInjection>8.0.0</MicrosoftExtensionsDependencyInjection>
+    <MicrosoftExtensionsConfigurationJson>8.0.1</MicrosoftExtensionsConfigurationJson>
+    <MicrosoftExtensionsDependencyInjection>8.0.1</MicrosoftExtensionsDependencyInjection>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'net9.0'">
-    <MicrosoftExtensionsConfiguration>9.0.14</MicrosoftExtensionsConfiguration>
-    <MicrosoftExtensionsConfigurationJson>9.0.14</MicrosoftExtensionsConfigurationJson>
-    <MicrosoftExtensionsDependencyInjection>9.0.14</MicrosoftExtensionsDependencyInjection>
+    <MicrosoftExtensionsConfiguration>9.0.15</MicrosoftExtensionsConfiguration>
+    <MicrosoftExtensionsConfigurationJson>9.0.15</MicrosoftExtensionsConfigurationJson>
+    <MicrosoftExtensionsDependencyInjection>9.0.15</MicrosoftExtensionsDependencyInjection>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'net10.0'">
-    <MicrosoftExtensionsConfiguration>10.0.5</MicrosoftExtensionsConfiguration>
-    <MicrosoftExtensionsConfigurationJson>10.0.5</MicrosoftExtensionsConfigurationJson>
-    <MicrosoftExtensionsDependencyInjection>10.0.5</MicrosoftExtensionsDependencyInjection>
+    <MicrosoftExtensionsConfiguration>10.0.7</MicrosoftExtensionsConfiguration>
+    <MicrosoftExtensionsConfigurationJson>10.0.7</MicrosoftExtensionsConfigurationJson>
+    <MicrosoftExtensionsDependencyInjection>10.0.7</MicrosoftExtensionsDependencyInjection>
   </PropertyGroup>
 
   <ItemGroup>
