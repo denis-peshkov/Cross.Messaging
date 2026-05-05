@@ -27,4 +27,8 @@ public interface IEmailSenderService
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>A task representing the asynchronous send operation.</returns>
     Task SendAsync(string toName, string toEmail, string subject, string textBody, string htmlBody, CancellationToken cancellationToken);
+
+    Task SendAsync(string toName, string toEmail, string subject, string textBody, string htmlBody, IEnumerable<IFormFile>? attachments, CancellationToken cancellationToken);
+
+    Task<Dictionary<string, string>> SendAsyncWithContentIds(string toName, string toEmail, string subject, string textBody, string htmlBody, IEnumerable<IFormFile>? attachments, IEnumerable<KeyValuePair<string, string>>? contentIdMap, CancellationToken cancellationToken);
 }

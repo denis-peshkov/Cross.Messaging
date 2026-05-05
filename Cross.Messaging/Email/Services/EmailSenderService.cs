@@ -134,4 +134,162 @@ public class EmailSenderService : IEmailSenderService
         }
     }
 
+    public async Task SendAsync(string toName, string toEmail, string subject, string textBody, string htmlBody, IEnumerable<IFormFile>? attachments, CancellationToken cancellationToken)
+    {
+         if (string.IsNullOrWhiteSpace(toEmail))
+        {
+            throw new ArgumentException("Recipient email is required.", nameof(toEmail));
+        }
+
+        using var message = new MimeMessage();
+        message.From.Add(new MailboxAddress(_options.FromUserName, _options.FromUserAddress));
+        message.To.Add(new MailboxAddress(toName, toEmail));
+        message.Subject = subject;
+        // message.ReplyTo.Add(new MailboxAddress(_options.FromUserName, _options.FromUserAddress));
+
+        var builder = new BodyBuilder
+        {
+            TextBody = textBody,
+            HtmlBody = htmlBody,
+        };
+
+        // Добавляем вложения, если они есть
+        if (attachments != null)
+        {
+            foreach (var attachment in attachments)
+            {
+                if (attachment != null && attachment.Length > 0)
+                {
+                    // Копируем поток в MemoryStream, чтобы MailKit мог его прочитать
+                    using var sourceStream = attachment.OpenReadStream();
+                    var memoryStream = new MemoryStream();
+                    await sourceStream.CopyToAsync(memoryStream, cancellationToken);
+                    memoryStream.Position = 0;
+
+                    var contentType = ContentType.Parse(attachment.ContentType ?? "application/octet-stream");
+                    builder.Attachments.Add(attachment.FileName ?? "attachment", memoryStream, contentType);
+                }
+            }
+        }
+
+        // Важно: почтовые клиенты сами выберут HTML или Text.
+        message.Body = builder.ToMessageBody();
+
+        using var smtp = new MailKit.Net.Smtp.SmtpClient();
+        await smtp.ConnectAsync(_options.SmtpHost, _options.SmtpPort, _options.SecureSocket, cancellationToken);
+        if (smtp.Capabilities.HasFlag(MailKit.Net.Smtp.SmtpCapabilities.Authentication) &&
+            !string.IsNullOrWhiteSpace(_options.SmtpLogin) &&
+            !string.IsNullOrWhiteSpace(_options.SmtpPassword))
+        {
+            await smtp.AuthenticateAsync(_options.SmtpLogin, _options.SmtpPassword, cancellationToken);
+        }
+
+        try
+        {
+            await smtp.SendAsync(message, cancellationToken);
+            _logger.LogInformation("Email sent to {Recipient} with {AttachmentCount} attachment(s)", toEmail, attachments?.Count() ?? 0);
+        }
+        catch (SmtpException ex)
+        {
+            _logger.LogError(ex, "SMTP error when sending email to {Recipient}", toEmail);
+            throw;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Unexpected error when sending email to {Recipient}", toEmail);
+            throw;
+        }
+        finally
+        {
+            await smtp.DisconnectAsync(true, cancellationToken);
+        }
+    }
+
+    public async Task<Dictionary<string, string>> SendAsyncWithContentIds(string toName, string toEmail, string subject, string textBody, string htmlBody, IEnumerable<IFormFile>? attachments, IEnumerable<KeyValuePair<string, string>>? contentIdMap, CancellationToken cancellationToken)
+    {
+         if (string.IsNullOrWhiteSpace(toEmail))
+        {
+            throw new ArgumentException("Recipient email is required.", nameof(toEmail));
+        }
+
+        var resultContentIdMap = new Dictionary<string, string>();
+
+        using var message = new MimeMessage();
+        message.From.Add(new MailboxAddress(_options.FromUserName, _options.FromUserAddress));
+        message.To.Add(new MailboxAddress(toName, toEmail));
+        message.Subject = subject;
+
+        var builder = new BodyBuilder
+        {
+            TextBody = textBody,
+            HtmlBody = htmlBody,
+        };
+
+        // Добавляем вложения с Content-ID, если они есть
+        if (attachments != null && contentIdMap != null)
+        {
+            var attachmentList = attachments.ToList();
+            var contentIdList = contentIdMap.ToList();
+
+            // Сопоставляем файлы с Content-ID по порядку
+            for (int i = 0; i < attachmentList.Count && i < contentIdList.Count; i++)
+            {
+                var attachment = attachmentList[i];
+                var contentIdPair = contentIdList[i];
+
+                if (attachment != null && attachment.Length > 0)
+                {
+                    var contentId = contentIdPair.Key;
+                    var fileName = contentIdPair.Value;
+                    resultContentIdMap[contentId] = fileName;
+
+                    // Копируем поток в MemoryStream, чтобы MailKit мог его прочитать
+                    using var sourceStream = attachment.OpenReadStream();
+                    var memoryStream = new MemoryStream();
+                    await sourceStream.CopyToAsync(memoryStream, cancellationToken);
+                    memoryStream.Position = 0;
+
+                    var contentType = ContentType.Parse(attachment.ContentType ?? "application/octet-stream");
+                    var attachmentEntity = builder.Attachments.Add(fileName, memoryStream, contentType);
+                    attachmentEntity.ContentId = contentId;
+                    attachmentEntity.ContentDisposition = new ContentDisposition(ContentDisposition.Attachment);
+                    attachmentEntity.ContentDisposition.FileName = fileName;
+                }
+            }
+        }
+
+        // Важно: почтовые клиенты сами выберут HTML или Text.
+        message.Body = builder.ToMessageBody();
+
+        using var smtp = new MailKit.Net.Smtp.SmtpClient();
+        await smtp.ConnectAsync(_options.SmtpHost, _options.SmtpPort, _options.SecureSocket, cancellationToken);
+        if (smtp.Capabilities.HasFlag(MailKit.Net.Smtp.SmtpCapabilities.Authentication) &&
+            !string.IsNullOrWhiteSpace(_options.SmtpLogin) &&
+            !string.IsNullOrWhiteSpace(_options.SmtpPassword))
+        {
+            await smtp.AuthenticateAsync(_options.SmtpLogin, _options.SmtpPassword, cancellationToken);
+        }
+
+        try
+        {
+            await smtp.SendAsync(message, cancellationToken);
+            _logger.LogInformation("Email sent to {Recipient} with {AttachmentCount} attachment(s)", toEmail, attachments?.Count() ?? 0);
+        }
+        catch (SmtpException ex)
+        {
+            _logger.LogError(ex, "SMTP error when sending email to {Recipient}", toEmail);
+            throw;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Unexpected error when sending email to {Recipient}", toEmail);
+            throw;
+        }
+        finally
+        {
+            await smtp.DisconnectAsync(true, cancellationToken);
+        }
+
+        return resultContentIdMap;
+    }
 }
