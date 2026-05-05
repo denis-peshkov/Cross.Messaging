@@ -9,19 +9,21 @@ internal static class EmailSendLogging
     /// Executes the send operation and writes success/error logs with recipient context.
     /// </summary>
     /// <param name="send">Asynchronous send operation.</param>
-    /// <param name="recipientEmail">Recipient email used for log context.</param>
     /// <param name="logger">Logger instance.</param>
+    /// <param name="recipientEmail">Recipient email used for log context.</param>
+    /// <param name="attachments"></param>
     /// <returns>A task representing the asynchronous operation.</returns>
     /// <exception cref="SmtpException">Thrown when SMTP-specific errors occur.</exception>
     internal static async Task RunSendAndLogAsync(
         Func<Task> send,
+        ILogger<EmailSenderService> logger,
         string recipientEmail,
-        ILogger<EmailSenderService> logger)
+        IReadOnlyCollection<IFormFile>? attachments = null)
     {
         try
         {
             await send();
-            logger.LogInformation("Email sent to {Recipient}", recipientEmail);
+            logger.LogInformation("Email sent to {Recipient} with {AttachmentCount} attachment(s)", recipientEmail, attachments?.Count() ?? 0);
         }
         catch (SmtpException ex)
         {

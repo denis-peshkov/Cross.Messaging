@@ -24,11 +24,10 @@ public interface IEmailSenderService
     /// <param name="subject">Message subject.</param>
     /// <param name="textBody">Plain-text message body.</param>
     /// <param name="htmlBody">HTML message body.</param>
+    /// <param name="attachments"></param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>A task representing the asynchronous send operation.</returns>
-    Task SendAsync(string toName, string toEmail, string subject, string textBody, string htmlBody, CancellationToken cancellationToken);
+    Task SendAsync(string toName, string toEmail, string subject, string textBody, string htmlBody, IReadOnlyCollection<IFormFile>? attachments, CancellationToken cancellationToken);
 
-    Task SendAsync(string toName, string toEmail, string subject, string textBody, string htmlBody, IEnumerable<IFormFile>? attachments, CancellationToken cancellationToken);
-
-    Task<Dictionary<string, string>> SendAsyncWithContentIds(string toName, string toEmail, string subject, string textBody, string htmlBody, IEnumerable<IFormFile>? attachments, IEnumerable<KeyValuePair<string, string>>? contentIdMap, CancellationToken cancellationToken);
+    Task<Dictionary<string, string>> SendAsyncWithContentIds(string toName, string toEmail, string subject, string textBody, string htmlBody, IReadOnlyCollection<IFormFile>? attachments, IReadOnlyCollection<KeyValuePair<string, string>>? contentIdMap, CancellationToken cancellationToken);
 }
