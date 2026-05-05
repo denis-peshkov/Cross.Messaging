@@ -355,6 +355,16 @@ public sealed class EmailSenderServiceIntegrationTests
                 {
                     break;
                 }
+                catch (ObjectDisposedException) when (cancellationToken.IsCancellationRequested)
+                {
+                    break;
+                }
+                catch (SocketException ex) when (
+                    cancellationToken.IsCancellationRequested ||
+                    ex.SocketErrorCode is SocketError.OperationAborted or SocketError.Interrupted or SocketError.InvalidArgument)
+                {
+                    break;
+                }
                 finally
                 {
                     client?.Dispose();
@@ -454,6 +464,15 @@ public sealed class EmailSenderServiceIntegrationTests
             catch (OperationCanceledException)
             {
                 // expected on shutdown
+            }
+            catch (ObjectDisposedException)
+            {
+                // expected on shutdown on some runtimes/platforms
+            }
+            catch (SocketException ex) when (
+                ex.SocketErrorCode is SocketError.OperationAborted or SocketError.Interrupted or SocketError.InvalidArgument)
+            {
+                // expected on shutdown on some runtimes/platforms
             }
             finally
             {
