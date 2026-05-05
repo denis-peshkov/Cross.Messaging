@@ -27,13 +27,11 @@ internal static class EmailSendLogging
         }
         catch (SmtpException ex)
         {
-            logger.LogError(ex, "SMTP error when sending email to {Recipient}", recipientEmail);
-            throw;
+            throw new InvalidOperationException($"SMTP error when sending email to {recipientEmail}", ex);
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Unexpected error when sending email to {Recipient}", recipientEmail);
-            throw;
+            throw new InvalidOperationException($"Unexpected error when sending email to {recipientEmail}", ex);
         }
     }
 }
