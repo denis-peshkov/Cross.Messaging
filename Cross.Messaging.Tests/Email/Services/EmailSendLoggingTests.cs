@@ -20,7 +20,7 @@ public sealed class EmailSendLoggingTests
     }
 
     [Test]
-    public async Task RunSendAndLogAsync_WhenSendThrowsSmtpException_LogsErrorAndRethrows()
+    public async Task RunSendAndLogAsync_WhenSendThrowsSmtpException_WrapsIntoInvalidOperationException()
     {
         var logger = new Mock<ILogger<EmailSenderService>>();
         var smtpEx = new SmtpException(SmtpStatusCode.GeneralFailure);
@@ -30,20 +30,13 @@ public sealed class EmailSendLoggingTests
             logger.Object,
             "dest@example.com");
 
-        await act.Should().ThrowAsync<SmtpException>();
-
-        logger.Verify(
-            x => x.Log(
-                LogLevel.Error,
-                It.IsAny<EventId>(),
-                It.IsAny<It.IsAnyType>(),
-                It.Is<Exception>(e => e is SmtpException),
-                It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
-            Times.Once);
+        var exceptionAssertion = await act.Should().ThrowAsync<InvalidOperationException>();
+        exceptionAssertion.Which.InnerException.Should().BeOfType<SmtpException>();
+        exceptionAssertion.Which.Message.Should().Contain("SMTP error");
     }
 
     [Test]
-    public async Task RunSendAndLogAsync_WhenSendThrowsNonSmtpException_LogsErrorAndRethrows()
+    public async Task RunSendAndLogAsync_WhenSendThrowsNonSmtpException_WrapsIntoInvalidOperationException()
     {
         var logger = new Mock<ILogger<EmailSenderService>>();
         var ex = new InvalidOperationException("fail");
@@ -53,16 +46,9 @@ public sealed class EmailSendLoggingTests
             logger.Object,
             "dest@example.com");
 
-        await act.Should().ThrowAsync<InvalidOperationException>();
-
-        logger.Verify(
-            x => x.Log(
-                LogLevel.Error,
-                It.IsAny<EventId>(),
-                It.IsAny<It.IsAnyType>(),
-                It.Is<Exception>(e => e is InvalidOperationException),
-                It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
-            Times.Once);
+        var exceptionAssertion = await act.Should().ThrowAsync<InvalidOperationException>();
+        exceptionAssertion.Which.InnerException.Should().BeSameAs(ex);
+        exceptionAssertion.Which.Message.Should().Contain("Unexpected error");
     }
 
     [Test]

@@ -124,11 +124,11 @@ public sealed class EmailSenderServiceTests
     }
 
     /// <summary>
-    /// System.Net.Mail path: failure happens inside <c>SendMailAsync</c>, inside the service try/catch — error is logged.
+    /// System.Net.Mail path: failure happens inside <c>SendMailAsync</c> and is wrapped into <see cref="InvalidOperationException" />.
     /// </summary>
     [Test]
     [Timeout(15_000)]
-    public async Task SendAsync_WithSingleBody_WhenSmtpUnreachable_LogsErrorAndThrows()
+    public async Task SendAsync_WithSingleBody_WhenSmtpUnreachable_ThrowsInvalidOperationException()
     {
         var logger = new Mock<ILogger<EmailSenderService>>();
         var value = new MessagingEmailOptions
@@ -147,16 +147,9 @@ public sealed class EmailSenderServiceTests
 
         Func<Task> act = () => sut.SendAsync("Name", "dest@example.com", "subj", "body", CancellationToken.None);
 
-        await act.Should().ThrowAsync<Exception>();
-
-        logger.Verify(
-            x => x.Log(
-                LogLevel.Error,
-                It.IsAny<EventId>(),
-                It.IsAny<It.IsAnyType>(),
-                It.IsAny<Exception>(),
-                It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
-            Times.AtLeastOnce());
+        var exceptionAssertion = await act.Should().ThrowAsync<InvalidOperationException>();
+        exceptionAssertion.Which.Message.Should().Contain("SMTP error");
+        exceptionAssertion.Which.InnerException.Should().NotBeNull();
     }
 
     /// <summary>

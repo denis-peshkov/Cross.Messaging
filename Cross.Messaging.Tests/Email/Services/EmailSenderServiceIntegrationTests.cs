@@ -355,16 +355,6 @@ public sealed class EmailSenderServiceIntegrationTests
                 {
                     break;
                 }
-                catch (ObjectDisposedException) when (cancellationToken.IsCancellationRequested)
-                {
-                    break;
-                }
-                catch (SocketException ex) when (
-                    cancellationToken.IsCancellationRequested ||
-                    ex.SocketErrorCode is SocketError.OperationAborted or SocketError.Interrupted or SocketError.InvalidArgument)
-                {
-                    break;
-                }
                 finally
                 {
                     client?.Dispose();
