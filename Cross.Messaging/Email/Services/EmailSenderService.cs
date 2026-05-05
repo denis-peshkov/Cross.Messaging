@@ -1,8 +1,6 @@
 namespace Cross.Messaging.Email.Services;
 
-/// <summary>
-/// Default SMTP-based implementation of <see cref="IEmailSenderService" />.
-/// </summary>
+/// <inheritdoc />
 public class EmailSenderService : IEmailSenderService
 {
     private readonly ILogger<EmailSenderService> _logger;
@@ -124,7 +122,7 @@ public class EmailSenderService : IEmailSenderService
             {
                 if (attachment != null && attachment.Length > 0)
                 {
-                    // Copy Stream into MemoryStream, to allow MailKit read it
+                    // Copy Stream to MemoryStream so MailKit can read it
                     await using var sourceStream = attachment.OpenReadStream();
                     var memoryStream = new MemoryStream();
                     await sourceStream.CopyToAsync(memoryStream, cancellationToken);
@@ -136,7 +134,7 @@ public class EmailSenderService : IEmailSenderService
             }
         }
 
-        // Note: mail clients choose whether to show HTML or plain text.
+        // Note: mail clients choose whether to show HTML or plain text
         message.Body = builder.ToMessageBody();
 
         using var smtp = new MailKit.Net.Smtp.SmtpClient();
@@ -201,13 +199,13 @@ public class EmailSenderService : IEmailSenderService
             HtmlBody = htmlBody,
         };
 
-        // Добавляем вложения с Content-ID, если они есть
+        // Add attachments with Content-ID, when provided
         if (attachments != null && contentIdMap != null)
         {
             var attachmentList = attachments.ToList();
             var contentIdList = contentIdMap.ToList();
 
-            // Сопоставляем файлы с Content-ID по порядку
+            // Match files to Content-ID entries by index order
             for (var i = 0; i < attachmentList.Count && i < contentIdList.Count; i++)
             {
                 var attachment = attachmentList[i];
@@ -220,7 +218,7 @@ public class EmailSenderService : IEmailSenderService
                 var (contentId, fileName) = contentIdList[i];
                 resultContentIdMap[contentId] = fileName;
 
-                // Копируем поток в MemoryStream, чтобы MailKit мог его прочитать
+                // Copy Stream to MemoryStream so MailKit can read it
                 await using var sourceStream = attachment.OpenReadStream();
                 var memoryStream = new MemoryStream();
                 await sourceStream.CopyToAsync(memoryStream, cancellationToken);
@@ -236,7 +234,7 @@ public class EmailSenderService : IEmailSenderService
             }
         }
 
-        // Важно: почтовые клиенты сами выберут HTML или Text.
+        // Note: mail clients choose whether to show HTML or plain text
         message.Body = builder.ToMessageBody();
 
         using var smtp = new MailKit.Net.Smtp.SmtpClient();
