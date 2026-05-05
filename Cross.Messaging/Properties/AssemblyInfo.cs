@@ -1,3 +1,1 @@
-﻿using System.Runtime.CompilerServices;
-
-[assembly: InternalsVisibleTo("Cross.Messaging.Tests")]
+﻿[assembly: InternalsVisibleTo("Cross.Messaging.Tests")]

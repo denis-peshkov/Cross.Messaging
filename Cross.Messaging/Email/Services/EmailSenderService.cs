@@ -1,8 +1,6 @@
 namespace Cross.Messaging.Email.Services;
 
-/// <summary>
-/// Default SMTP-based implementation of <see cref="IEmailSenderService" />.
-/// </summary>
+/// <inheritdoc />
 public class EmailSenderService : IEmailSenderService
 {
     private readonly ILogger<EmailSenderService> _logger;
@@ -62,7 +60,9 @@ public class EmailSenderService : IEmailSenderService
             Subject = subject,
             Body = body,
             IsBodyHtml = true,
+            // ReplyToList = { new MailAddress() },
         };
+
 
         await EmailSendLogging.RunSendAndLogAsync(
             async () =>
@@ -73,12 +73,13 @@ public class EmailSenderService : IEmailSenderService
                 await smtp.SendMailAsync(message, cancellationToken);
 #endif
             },
-            toEmail,
-            _logger);
+            _logger,
+            toEmail
+        );
     }
 
     /// <inheritdoc />
-    public async Task SendAsync(string toName, string toEmail, string subject, string textBody, string htmlBody, CancellationToken cancellationToken)
+    public async Task SendAsync(string toName, string toEmail, string subject, string textBody, string htmlBody, IReadOnlyCollection<IFormFile>? attachments, CancellationToken cancellationToken)
     {
         if (string.IsNullOrWhiteSpace(toEmail))
         {
@@ -114,19 +115,45 @@ public class EmailSenderService : IEmailSenderService
             HtmlBody = htmlBody,
         };
 
-        // Note: mail clients choose whether to show HTML or plain text.
+        // Note: add attachments, if exists
+        if (attachments != null)
+        {
+            foreach (var attachment in attachments)
+            {
+                if (attachment != null && attachment.Length > 0)
+                {
+                    // Copy Stream to MemoryStream so MailKit can read it
+                    await using var sourceStream = attachment.OpenReadStream();
+                    var memoryStream = new MemoryStream();
+                    await sourceStream.CopyToAsync(memoryStream, cancellationToken);
+                    memoryStream.Position = 0;
+
+                    var contentType = ContentType.Parse(attachment.ContentType ?? "application/octet-stream");
+                    await builder.Attachments.AddAsync(attachment.FileName ?? "attachment", memoryStream, contentType, cancellationToken);
+                }
+            }
+        }
+
+        // Note: mail clients choose whether to show HTML or plain text
         message.Body = builder.ToMessageBody();
 
         using var smtp = new MailKit.Net.Smtp.SmtpClient();
         await smtp.ConnectAsync(_options.SmtpHost, _options.SmtpPort, _options.SecureSocket, cancellationToken);
-        await smtp.AuthenticateAsync(_options.SmtpLogin, _options.SmtpPassword, cancellationToken);
+        if (smtp.Capabilities.HasFlag(MailKit.Net.Smtp.SmtpCapabilities.Authentication) &&
+            !string.IsNullOrWhiteSpace(_options.SmtpLogin) &&
+            !string.IsNullOrWhiteSpace(_options.SmtpPassword))
+        {
+            await smtp.AuthenticateAsync(_options.SmtpLogin, _options.SmtpPassword, cancellationToken);
+        }
 
         try
         {
             await EmailSendLogging.RunSendAndLogAsync(
                 () => smtp.SendAsync(message, cancellationToken),
+                _logger,
                 toEmail,
-                _logger);
+                attachments
+            );
         }
         finally
         {
@@ -134,4 +161,105 @@ public class EmailSenderService : IEmailSenderService
         }
     }
 
+    /// <inheritdoc />
+    public async Task<Dictionary<string, string>> SendAsyncWithContentIds(string toName, string toEmail, string subject, string textBody, string htmlBody, IReadOnlyCollection<IFormFile>? attachments, IReadOnlyCollection<KeyValuePair<string, string>>? contentIdMap, CancellationToken cancellationToken)
+    {
+        if (string.IsNullOrWhiteSpace(toEmail))
+        {
+            throw new ArgumentException("Recipient email is required.", nameof(toEmail));
+        }
+        if (string.IsNullOrWhiteSpace(subject))
+        {
+            throw new ArgumentException("Subject is required.", nameof(subject));
+        }
+        if (string.IsNullOrWhiteSpace(textBody))
+        {
+            throw new ArgumentException("Text body is required.", nameof(textBody));
+        }
+        if (string.IsNullOrWhiteSpace(htmlBody))
+        {
+            throw new ArgumentException("HTML body is required.", nameof(htmlBody));
+        }
+
+        if (!string.IsNullOrWhiteSpace(_options.RecipientOverride))
+        {
+            toEmail = _options.RecipientOverride;
+        }
+
+        var resultContentIdMap = new Dictionary<string, string>();
+
+        using var message = new MimeMessage();
+        message.From.Add(new MailboxAddress(_options.FromUserName, _options.FromUserAddress));
+        message.To.Add(new MailboxAddress(toName, toEmail));
+        message.Subject = subject;
+
+        var builder = new BodyBuilder
+        {
+            TextBody = textBody,
+            HtmlBody = htmlBody,
+        };
+
+        // Add attachments with Content-ID, when provided
+        if (attachments != null && contentIdMap != null)
+        {
+            var attachmentList = attachments.ToList();
+            var contentIdList = contentIdMap.ToList();
+
+            // Match files to Content-ID entries by index order
+            for (var i = 0; i < attachmentList.Count && i < contentIdList.Count; i++)
+            {
+                var attachment = attachmentList[i];
+
+                if (attachment is not { Length: > 0 })
+                {
+                    continue;
+                }
+
+                var (contentId, fileName) = contentIdList[i];
+                resultContentIdMap[contentId] = fileName;
+
+                // Copy Stream to MemoryStream so MailKit can read it
+                await using var sourceStream = attachment.OpenReadStream();
+                var memoryStream = new MemoryStream();
+                await sourceStream.CopyToAsync(memoryStream, cancellationToken);
+                memoryStream.Position = 0;
+
+                var contentType = ContentType.Parse(attachment.ContentType ?? "application/octet-stream");
+                var attachmentEntity = await builder.Attachments.AddAsync(fileName, memoryStream, contentType, cancellationToken);
+                attachmentEntity.ContentId = contentId;
+                attachmentEntity.ContentDisposition = new ContentDisposition(ContentDisposition.Attachment)
+                {
+                    FileName = fileName
+                };
+            }
+        }
+
+        // Note: mail clients choose whether to show HTML or plain text
+        message.Body = builder.ToMessageBody();
+
+        using var smtp = new MailKit.Net.Smtp.SmtpClient();
+        await smtp.ConnectAsync(_options.SmtpHost, _options.SmtpPort, _options.SecureSocket, cancellationToken);
+        if (smtp.Capabilities.HasFlag(MailKit.Net.Smtp.SmtpCapabilities.Authentication) &&
+            !string.IsNullOrWhiteSpace(_options.SmtpLogin) &&
+            !string.IsNullOrWhiteSpace(_options.SmtpPassword))
+        {
+            await smtp.AuthenticateAsync(_options.SmtpLogin, _options.SmtpPassword, cancellationToken);
+        }
+
+        try
+        {
+            await EmailSendLogging.RunSendAndLogAsync(
+                () => smtp.SendAsync(message, cancellationToken),
+                _logger,
+                toEmail,
+                attachments
+            );
+        }
+        finally
+        {
+            await smtp.DisconnectAsync(true, cancellationToken);
+        }
+
+        return resultContentIdMap;
+    }
 }

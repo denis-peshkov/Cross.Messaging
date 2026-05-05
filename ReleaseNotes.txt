@@ -22,3 +22,12 @@ v1.1.3 - 26 Apr 2026
 
 v1.1.4 - 26 Apr 2026
 - Upgrade dependencies.
+
+v2.0.0 - 05 May 2026
+- Email sender (BREAKING CHANGE): added attachment support in public API (`IFormFile` collections) and implementation.
+- Email sender: added `SendAsyncWithContentIds(...)` flow for attachments with custom `Content-ID` mapping.
+- Email sender: improved validation for recipient/subject/body parameters and attachment edge cases.
+- Logging: updated shared `EmailSendLogging` usage and tests for success/error paths.
+- Dependencies: added `Microsoft.AspNetCore.Http.Abstractions` to project and nuspec dependency groups.
+- Documentation: expanded XML comments for email services and updated README with current API examples.
+- Tests: fixed and expanded unit/integration tests; achieved 100% line/branch/method coverage for `Cross.Messaging`.

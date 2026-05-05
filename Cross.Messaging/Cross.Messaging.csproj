@@ -10,10 +10,12 @@
     <Platforms>AnyCPU</Platforms>
     <NoWarn>1701;1702;1591;CS8618;</NoWarn>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.1'">
     <MailKit>4.16.0</MailKit>
+    <MicrosoftAspNetCoreHttpAbstractions>2.3.0</MicrosoftAspNetCoreHttpAbstractions>
     <MicrosoftExtensionsConfiguration>8.0.0</MicrosoftExtensionsConfiguration>
     <MicrosoftExtensionsDependencyInjectionAbstractions>8.0.2</MicrosoftExtensionsDependencyInjectionAbstractions>
     <MicrosoftExtensionsLoggingAbstractions>8.0.3</MicrosoftExtensionsLoggingAbstractions>
@@ -23,6 +25,7 @@
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'net6.0'">
     <MailKit>4.16.0</MailKit>
+    <MicrosoftAspNetCoreHttpAbstractions>2.3.0</MicrosoftAspNetCoreHttpAbstractions>
     <MicrosoftExtensionsConfiguration>8.0.0</MicrosoftExtensionsConfiguration>
     <MicrosoftExtensionsDependencyInjectionAbstractions>8.0.2</MicrosoftExtensionsDependencyInjectionAbstractions>
     <MicrosoftExtensionsLoggingAbstractions>8.0.3</MicrosoftExtensionsLoggingAbstractions>
@@ -32,6 +35,7 @@
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'net7.0'">
     <MailKit>4.16.0</MailKit>
+    <MicrosoftAspNetCoreHttpAbstractions>2.3.0</MicrosoftAspNetCoreHttpAbstractions>
     <MicrosoftExtensionsConfiguration>8.0.0</MicrosoftExtensionsConfiguration>
     <MicrosoftExtensionsDependencyInjectionAbstractions>8.0.2</MicrosoftExtensionsDependencyInjectionAbstractions>
     <MicrosoftExtensionsLoggingAbstractions>8.0.3</MicrosoftExtensionsLoggingAbstractions>
@@ -41,6 +45,7 @@
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'net8.0'">
     <MailKit>4.16.0</MailKit>
+    <MicrosoftAspNetCoreHttpAbstractions>2.3.0</MicrosoftAspNetCoreHttpAbstractions>
     <MicrosoftExtensionsConfiguration>8.0.0</MicrosoftExtensionsConfiguration>
     <MicrosoftExtensionsDependencyInjectionAbstractions>8.0.2</MicrosoftExtensionsDependencyInjectionAbstractions>
     <MicrosoftExtensionsLoggingAbstractions>8.0.3</MicrosoftExtensionsLoggingAbstractions>
@@ -50,6 +55,7 @@
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'net9.0'">
     <MailKit>4.16.0</MailKit>
+    <MicrosoftAspNetCoreHttpAbstractions>2.3.0</MicrosoftAspNetCoreHttpAbstractions>
     <MicrosoftExtensionsConfiguration>9.0.15</MicrosoftExtensionsConfiguration>
     <MicrosoftExtensionsDependencyInjectionAbstractions>9.0.15</MicrosoftExtensionsDependencyInjectionAbstractions>
     <MicrosoftExtensionsLoggingAbstractions>9.0.15</MicrosoftExtensionsLoggingAbstractions>
@@ -59,6 +65,7 @@
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'net10.0'">
     <MailKit>4.16.0</MailKit>
+    <MicrosoftAspNetCoreHttpAbstractions>2.3.0</MicrosoftAspNetCoreHttpAbstractions>
     <MicrosoftExtensionsConfiguration>10.0.7</MicrosoftExtensionsConfiguration>
     <MicrosoftExtensionsDependencyInjectionAbstractions>10.0.7</MicrosoftExtensionsDependencyInjectionAbstractions>
     <MicrosoftExtensionsLoggingAbstractions>10.0.7</MicrosoftExtensionsLoggingAbstractions>
@@ -73,6 +80,7 @@
 
   <ItemGroup>
     <PackageReference Include="MailKit" Version="$(MailKit)" />
+    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="$(MicrosoftAspNetCoreHttpAbstractions)" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="$(MicrosoftExtensionsConfiguration)" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="$(MicrosoftExtensionsDependencyInjectionAbstractions)" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="$(MicrosoftExtensionsLoggingAbstractions)" />

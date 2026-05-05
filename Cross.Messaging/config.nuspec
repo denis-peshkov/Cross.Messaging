@@ -14,11 +14,18 @@
     <license type="file">LICENSE</license>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <releaseNotes><![CDATA[
-- Upgrade dependencies.
+- Email sender (BREAKING CHANGE): added attachment support in public API (`IFormFile` collections) and implementation.
+- Email sender: added `SendAsyncWithContentIds(...)` flow for attachments with custom `Content-ID` mapping.
+- Email sender: improved validation for recipient/subject/body parameters and attachment edge cases.
+- Logging: updated shared `EmailSendLogging` usage and tests for success/error paths.
+- Dependencies: added `Microsoft.AspNetCore.Http.Abstractions` to project and nuspec dependency groups.
+- Documentation: expanded XML comments for email services and updated README with current API examples.
+- Tests: fixed and expanded unit/integration tests; achieved 100% line/branch/method coverage for `Cross.Messaging`.
 ]]></releaseNotes>
     <dependencies>
       <group targetFramework="netstandard2.1">
         <dependency id="MailKit" version="4.16.0" />
+        <dependency id="Microsoft.AspNetCore.Http.Abstractions" version="2.3.0" />
         <dependency id="Microsoft.Extensions.Configuration" version="8.0.0" />
         <dependency id="Microsoft.Extensions.DependencyInjection.Abstractions" version="8.0.2" />
         <dependency id="Microsoft.Extensions.Logging.Abstractions" version="8.0.3" />
@@ -27,6 +34,7 @@
       </group>
       <group targetFramework="net6.0">
         <dependency id="MailKit" version="4.16.0" />
+        <dependency id="Microsoft.AspNetCore.Http.Abstractions" version="2.3.0" />
         <dependency id="Microsoft.Extensions.Configuration" version="8.0.0" />
         <dependency id="Microsoft.Extensions.DependencyInjection.Abstractions" version="8.0.2" />
         <dependency id="Microsoft.Extensions.Logging.Abstractions" version="8.0.3" />
@@ -35,6 +43,7 @@
       </group>
       <group targetFramework="net7.0">
         <dependency id="MailKit" version="4.16.0" />
+        <dependency id="Microsoft.AspNetCore.Http.Abstractions" version="2.3.0" />
         <dependency id="Microsoft.Extensions.Configuration" version="8.0.0" />
         <dependency id="Microsoft.Extensions.DependencyInjection.Abstractions" version="8.0.2" />
         <dependency id="Microsoft.Extensions.Logging.Abstractions" version="8.0.3" />
@@ -43,6 +52,7 @@
       </group>
       <group targetFramework="net8.0">
         <dependency id="MailKit" version="4.16.0" />
+        <dependency id="Microsoft.AspNetCore.Http.Abstractions" version="2.3.0" />
         <dependency id="Microsoft.Extensions.Configuration" version="8.0.0" />
         <dependency id="Microsoft.Extensions.DependencyInjection.Abstractions" version="8.0.2" />
         <dependency id="Microsoft.Extensions.Logging.Abstractions" version="8.0.3" />
@@ -51,6 +61,7 @@
       </group>
       <group targetFramework="net9.0">
         <dependency id="MailKit" version="4.16.0" />
+        <dependency id="Microsoft.AspNetCore.Http.Abstractions" version="2.3.0" />
         <dependency id="Microsoft.Extensions.Configuration" version="9.0.15" />
         <dependency id="Microsoft.Extensions.DependencyInjection.Abstractions" version="9.0.15" />
         <dependency id="Microsoft.Extensions.Logging.Abstractions" version="9.0.15" />
@@ -59,6 +70,7 @@
       </group>
       <group targetFramework="net10.0">
         <dependency id="MailKit" version="4.16.0" />
+        <dependency id="Microsoft.AspNetCore.Http.Abstractions" version="2.3.0" />
         <dependency id="Microsoft.Extensions.Configuration" version="10.0.7" />
         <dependency id="Microsoft.Extensions.DependencyInjection.Abstractions" version="10.0.7" />
         <dependency id="Microsoft.Extensions.Logging.Abstractions" version="10.0.7" />
