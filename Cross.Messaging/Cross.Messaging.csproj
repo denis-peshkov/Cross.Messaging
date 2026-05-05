@@ -10,6 +10,7 @@
     <Platforms>AnyCPU</Platforms>
     <NoWarn>1701;1702;1591;CS8618;</NoWarn>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.1'">

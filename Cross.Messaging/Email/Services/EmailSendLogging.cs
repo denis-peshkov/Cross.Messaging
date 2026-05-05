@@ -11,7 +11,7 @@ internal static class EmailSendLogging
     /// <param name="send">Asynchronous send operation.</param>
     /// <param name="logger">Logger instance.</param>
     /// <param name="recipientEmail">Recipient email used for log context.</param>
-    /// <param name="attachments"></param>
+    /// <param name="attachments">Optional collection of sent attachments.</param>
     /// <returns>A task representing the asynchronous operation.</returns>
     /// <exception cref="SmtpException">Thrown when SMTP-specific errors occur.</exception>
     internal static async Task RunSendAndLogAsync(
