@@ -1,3 +1,5 @@
+using System.IO;
+
 namespace Cross.Messaging.Tests.Email.Services;
 
 public sealed class EmailSenderServiceTests
@@ -34,11 +36,91 @@ public sealed class EmailSenderServiceTests
         var options = BuildOptions();
         var sut = new EmailSenderService(logger.Object, options);
 
-        Func<Task> act = () => sut.SendAsync("name", toEmail!, "subject", "text", "<b>html</b>", CancellationToken.None);
+        Func<Task> act = () => sut.SendAsync("name", toEmail!, "subject", "text", "<b>html</b>", null, CancellationToken.None);
 
         await act.Should().ThrowAsync<ArgumentException>()
             .WithParameterName(nameof(toEmail))
             .Where(e => e.Message.Contains("Recipient email", StringComparison.Ordinal));
+    }
+
+    [Test]
+    [TestCase(null)]
+    [TestCase("")]
+    [TestCase(" ")]
+    public async Task SendAsync_WithSingleBody_ThrowsArgumentExceptionForInvalidSubject(string? subject)
+    {
+        var logger = new Mock<ILogger<EmailSenderService>>();
+        var options = BuildOptions();
+        var sut = new EmailSenderService(logger.Object, options);
+
+        Func<Task> act = () => sut.SendAsync("name", "dest@example.com", subject!, "body", CancellationToken.None);
+
+        await act.Should().ThrowAsync<ArgumentException>()
+            .WithParameterName(nameof(subject));
+    }
+
+    [Test]
+    [TestCase(null)]
+    [TestCase("")]
+    [TestCase(" ")]
+    public async Task SendAsync_WithSingleBody_ThrowsArgumentExceptionForInvalidBody(string? body)
+    {
+        var logger = new Mock<ILogger<EmailSenderService>>();
+        var options = BuildOptions();
+        var sut = new EmailSenderService(logger.Object, options);
+
+        Func<Task> act = () => sut.SendAsync("name", "dest@example.com", "subject", body!, CancellationToken.None);
+
+        await act.Should().ThrowAsync<ArgumentException>()
+            .WithParameterName(nameof(body));
+    }
+
+    [Test]
+    [TestCase(null)]
+    [TestCase("")]
+    [TestCase(" ")]
+    public async Task SendAsync_WithTextAndHtml_ThrowsArgumentExceptionForInvalidSubject(string? subject)
+    {
+        var logger = new Mock<ILogger<EmailSenderService>>();
+        var options = BuildOptions();
+        var sut = new EmailSenderService(logger.Object, options);
+
+        Func<Task> act = () => sut.SendAsync("name", "dest@example.com", subject!, "text", "<b>html</b>", null, CancellationToken.None);
+
+        await act.Should().ThrowAsync<ArgumentException>()
+            .WithParameterName(nameof(subject));
+    }
+
+    [Test]
+    [TestCase(null)]
+    [TestCase("")]
+    [TestCase(" ")]
+    public async Task SendAsync_WithTextAndHtml_ThrowsArgumentExceptionForInvalidTextBody(string? textBody)
+    {
+        var logger = new Mock<ILogger<EmailSenderService>>();
+        var options = BuildOptions();
+        var sut = new EmailSenderService(logger.Object, options);
+
+        Func<Task> act = () => sut.SendAsync("name", "dest@example.com", "subject", textBody!, "<b>html</b>", null, CancellationToken.None);
+
+        await act.Should().ThrowAsync<ArgumentException>()
+            .WithParameterName(nameof(textBody));
+    }
+
+    [Test]
+    [TestCase(null)]
+    [TestCase("")]
+    [TestCase(" ")]
+    public async Task SendAsync_WithTextAndHtml_ThrowsArgumentExceptionForInvalidHtmlBody(string? htmlBody)
+    {
+        var logger = new Mock<ILogger<EmailSenderService>>();
+        var options = BuildOptions();
+        var sut = new EmailSenderService(logger.Object, options);
+
+        Func<Task> act = () => sut.SendAsync("name", "dest@example.com", "subject", "text", htmlBody!, null, CancellationToken.None);
+
+        await act.Should().ThrowAsync<ArgumentException>()
+            .WithParameterName(nameof(htmlBody));
     }
 
     /// <summary>
@@ -99,7 +181,136 @@ public sealed class EmailSenderServiceTests
         options.Setup(x => x.Value).Returns(value);
         var sut = new EmailSenderService(logger.Object, options.Object);
 
-        Func<Task> act = () => sut.SendAsync("Name", "dest@example.com", "subj", "text", "<p>x</p>", CancellationToken.None);
+        Func<Task> act = () => sut.SendAsync("Name", "dest@example.com", "subj", "text", "<p>x</p>", null, CancellationToken.None);
+
+        await act.Should().ThrowAsync<Exception>();
+    }
+
+    [Test]
+    public async Task SendAsyncWithContentIds_WhenEmailIsInvalid_ThrowsArgumentException()
+    {
+        var logger = new Mock<ILogger<EmailSenderService>>();
+        var options = BuildOptions();
+        var sut = new EmailSenderService(logger.Object, options);
+
+        Func<Task> act = () => sut.SendAsyncWithContentIds(
+            "name",
+            "",
+            "subject",
+            "text",
+            "<b>html</b>",
+            null,
+            null,
+            CancellationToken.None);
+
+        await act.Should().ThrowAsync<ArgumentException>()
+            .WithParameterName("toEmail");
+    }
+
+    [Test]
+    [TestCase(null)]
+    [TestCase("")]
+    [TestCase(" ")]
+    public async Task SendAsyncWithContentIds_WhenSubjectIsInvalid_ThrowsArgumentException(string? subject)
+    {
+        var logger = new Mock<ILogger<EmailSenderService>>();
+        var options = BuildOptions();
+        var sut = new EmailSenderService(logger.Object, options);
+
+        Func<Task> act = () => sut.SendAsyncWithContentIds(
+            "name",
+            "dest@example.com",
+            subject!,
+            "text",
+            "<b>html</b>",
+            null,
+            null,
+            CancellationToken.None);
+
+        await act.Should().ThrowAsync<ArgumentException>()
+            .WithParameterName(nameof(subject));
+    }
+
+    [Test]
+    [TestCase(null)]
+    [TestCase("")]
+    [TestCase(" ")]
+    public async Task SendAsyncWithContentIds_WhenTextBodyIsInvalid_ThrowsArgumentException(string? textBody)
+    {
+        var logger = new Mock<ILogger<EmailSenderService>>();
+        var options = BuildOptions();
+        var sut = new EmailSenderService(logger.Object, options);
+
+        Func<Task> act = () => sut.SendAsyncWithContentIds(
+            "name",
+            "dest@example.com",
+            "subject",
+            textBody!,
+            "<b>html</b>",
+            null,
+            null,
+            CancellationToken.None);
+
+        await act.Should().ThrowAsync<ArgumentException>()
+            .WithParameterName(nameof(textBody));
+    }
+
+    [Test]
+    [TestCase(null)]
+    [TestCase("")]
+    [TestCase(" ")]
+    public async Task SendAsyncWithContentIds_WhenHtmlBodyIsInvalid_ThrowsArgumentException(string? htmlBody)
+    {
+        var logger = new Mock<ILogger<EmailSenderService>>();
+        var options = BuildOptions();
+        var sut = new EmailSenderService(logger.Object, options);
+
+        Func<Task> act = () => sut.SendAsyncWithContentIds(
+            "name",
+            "dest@example.com",
+            "subject",
+            "text",
+            htmlBody!,
+            null,
+            null,
+            CancellationToken.None);
+
+        await act.Should().ThrowAsync<ArgumentException>()
+            .WithParameterName(nameof(htmlBody));
+    }
+
+    [Test]
+    public async Task SendAsyncWithContentIds_WhenConnectFails_ReturnsExceptionAfterPreparingAttachments()
+    {
+        var logger = new Mock<ILogger<EmailSenderService>>();
+        var value = new MessagingEmailOptions
+        {
+            SmtpHost = "127.0.0.1",
+            SmtpPort = 1,
+            SecureSocket = SecureSocketOptions.None,
+            SmtpLogin = "x",
+            SmtpPassword = "y",
+            FromUserName = "Bot",
+            FromUserAddress = "bot@example.com",
+        };
+
+        var options = new Mock<IOptionsSnapshot<MessagingEmailOptions>>();
+        options.Setup(x => x.Value).Returns(value);
+        var sut = new EmailSenderService(logger.Object, options.Object);
+
+        var attachment = BuildFormFile("file.txt", "text/plain", "payload");
+        var attachments = new[] { attachment };
+        var contentMap = new[] { new KeyValuePair<string, string>("cid-1", "file.txt") };
+
+        Func<Task> act = async () => await sut.SendAsyncWithContentIds(
+            "Name",
+            "dest@example.com",
+            "subj",
+            "text",
+            "<p>x</p>",
+            attachments,
+            contentMap,
+            CancellationToken.None);
 
         await act.Should().ThrowAsync<Exception>();
     }
@@ -120,6 +331,17 @@ public sealed class EmailSenderServiceTests
         var options = new Mock<IOptionsSnapshot<MessagingEmailOptions>>();
         options.Setup(x => x.Value).Returns(value);
         return options.Object;
+    }
+
+    private static IFormFile BuildFormFile(string fileName, string contentType, string payload)
+    {
+        var bytes = System.Text.Encoding.UTF8.GetBytes(payload);
+        var file = new Mock<IFormFile>();
+        file.SetupGet(x => x.FileName).Returns(fileName);
+        file.SetupGet(x => x.ContentType).Returns(contentType);
+        file.SetupGet(x => x.Length).Returns(bytes.Length);
+        file.Setup(x => x.OpenReadStream()).Returns(() => new MemoryStream(bytes));
+        return file.Object;
     }
 
 }

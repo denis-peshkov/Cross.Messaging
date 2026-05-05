@@ -7,7 +7,7 @@ public sealed class EmailSendLoggingTests
     {
         var logger = new Mock<ILogger<EmailSenderService>>();
 
-        await EmailSendLogging.RunSendAndLogAsync(() => Task.CompletedTask, "dest@example.com", logger.Object);
+        await EmailSendLogging.RunSendAndLogAsync(() => Task.CompletedTask, logger.Object, "dest@example.com");
 
         logger.Verify(
             x => x.Log(
@@ -27,8 +27,8 @@ public sealed class EmailSendLoggingTests
 
         Func<Task> act = () => EmailSendLogging.RunSendAndLogAsync(
             () => Task.FromException(smtpEx),
-            "dest@example.com",
-            logger.Object);
+            logger.Object,
+            "dest@example.com");
 
         await act.Should().ThrowAsync<SmtpException>();
 
@@ -50,8 +50,8 @@ public sealed class EmailSendLoggingTests
 
         Func<Task> act = () => EmailSendLogging.RunSendAndLogAsync(
             () => Task.FromException(ex),
-            "dest@example.com",
-            logger.Object);
+            logger.Object,
+            "dest@example.com");
 
         await act.Should().ThrowAsync<InvalidOperationException>();
 
@@ -61,6 +61,24 @@ public sealed class EmailSendLoggingTests
                 It.IsAny<EventId>(),
                 It.IsAny<It.IsAnyType>(),
                 It.Is<Exception>(e => e is InvalidOperationException),
+                It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
+            Times.Once);
+    }
+
+    [Test]
+    public async Task RunSendAndLogAsync_WhenAttachmentsProvided_LogsInformation()
+    {
+        var logger = new Mock<ILogger<EmailSenderService>>();
+        var attachments = new[] { new Mock<IFormFile>().Object, new Mock<IFormFile>().Object };
+
+        await EmailSendLogging.RunSendAndLogAsync(() => Task.CompletedTask, logger.Object, "dest@example.com", attachments);
+
+        logger.Verify(
+            x => x.Log(
+                LogLevel.Information,
+                It.IsAny<EventId>(),
+                It.IsAny<It.IsAnyType>(),
+                It.IsAny<Exception>(),
                 It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
             Times.Once);
     }

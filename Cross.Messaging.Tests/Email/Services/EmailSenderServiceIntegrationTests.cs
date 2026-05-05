@@ -86,7 +86,7 @@ public sealed class EmailSenderServiceIntegrationTests
         var logger = new Mock<ILogger<EmailSenderService>>();
         var sut = new EmailSenderService(logger.Object, options.Object);
 
-        await sut.SendAsync("Recipient", "dest2@example.com", "Subj", "plain", "<b>html</b>", CancellationToken.None);
+        await sut.SendAsync("Recipient", "dest2@example.com", "Subj", "plain", "<b>html</b>", null, CancellationToken.None);
 
         Assert.That(server.ReceivedEmailCount, Is.EqualTo(1));
         logger.Verify(

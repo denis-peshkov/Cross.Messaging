@@ -52,6 +52,29 @@ services.AddEmailSender(configuration);
 - binds the `MessagingEmail` configuration section to `MessagingEmailOptions`
 - registers `IEmailSenderService` -> `EmailSenderService` (scoped)
 
+### Email sender API
+
+`IEmailSenderService` currently exposes:
+
+- `SendAsync(toName, toEmail, subject, body, cancellationToken)`
+- `SendAsync(toName, toEmail, subject, textBody, htmlBody, attachments, cancellationToken)`
+- `SendAsyncWithContentIds(toName, toEmail, subject, textBody, htmlBody, attachments, contentIdMap, cancellationToken)`
+
+If you use attachment overloads, pass `IReadOnlyCollection<IFormFile>?` (`Microsoft.AspNetCore.Http`).
+
+Example:
+
+```csharp
+await emailSender.SendAsync(
+    toName: "User",
+    toEmail: "user@example.com",
+    subject: "Hello",
+    textBody: "Plain text body",
+    htmlBody: "<p>HTML body</p>",
+    attachments: null,
+    cancellationToken: cancellationToken);
+```
+
 ### Sample email configuration
 
 ```json

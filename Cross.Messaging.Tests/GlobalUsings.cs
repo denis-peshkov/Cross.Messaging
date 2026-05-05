@@ -13,6 +13,7 @@ global using Cross.Messaging.Sms.Services;
 global using Cross.Messaging.Telegram.Enum;
 global using FluentAssertions;
 global using MailKit.Security;
+global using Microsoft.AspNetCore.Http;
 global using Microsoft.Extensions.Configuration;
 global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.Extensions.Logging;
