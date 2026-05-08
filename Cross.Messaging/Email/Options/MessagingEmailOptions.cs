@@ -57,4 +57,25 @@ public class MessagingEmailOptions
     /// Optional recipient override used to redirect all outgoing emails.
     /// </summary>
     public string RecipientOverride { get; set; }
+
+    /// <summary>
+    /// Optional BCC recipients added to outgoing MailKit messages.
+    /// </summary>
+    public List<MessagingEmailBccRecipientOptions> BccRecipients { get; set; } = new();
+}
+
+/// <summary>
+/// BCC recipient configuration item.
+/// </summary>
+public class MessagingEmailBccRecipientOptions
+{
+    /// <summary>
+    /// Recipient display name.
+    /// </summary>
+    public string Name { get; set; }
+
+    /// <summary>
+    /// Recipient email address.
+    /// </summary>
+    public string Email { get; set; }
 }

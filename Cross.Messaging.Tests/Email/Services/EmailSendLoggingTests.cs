@@ -1,5 +1,6 @@
 namespace Cross.Messaging.Tests.Email.Services;
 
+[Category("Unit")]
 public sealed class EmailSendLoggingTests
 {
     [Test]

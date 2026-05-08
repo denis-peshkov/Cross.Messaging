@@ -3,6 +3,7 @@ namespace Cross.Messaging.Tests.Contracts;
 /// <summary>
 /// Compile-time and reflection checks that public services match their abstractions.
 /// </summary>
+[Category("Unit")]
 public sealed class ServiceContractsTests
 {
     [Test]

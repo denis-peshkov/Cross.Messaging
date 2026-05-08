@@ -1,5 +1,6 @@
 namespace Cross.Messaging.Tests.Telegram.Enum;
 
+[Category("Unit")]
 public sealed class TelegramChannelTypeEnumTests
 {
     [Test]

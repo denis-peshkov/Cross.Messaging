@@ -1,5 +1,6 @@
 namespace Cross.Messaging.Tests.Email.Options;
 
+[Category("Unit")]
 public sealed class MessagingEmailOptionsTests
 {
     [Test]

@@ -1,5 +1,6 @@
 namespace Cross.Messaging.Tests.Email.Services;
 
+[Category("Integration")]
 public sealed class EmailSenderServiceIntegrationTests
 {
     [Test]

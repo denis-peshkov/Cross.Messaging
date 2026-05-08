@@ -21,6 +21,16 @@ public class EmailSenderService : IEmailSenderService
 
     /// <inheritdoc />
     public async Task SendAsync(string toName, string toEmail, string subject, string body, CancellationToken cancellationToken)
+        => await SendAsync(
+            toName,
+            toEmail,
+            subject,
+            body,
+            MailPriority.Normal,
+            cancellationToken);
+
+    /// <inheritdoc />
+    public async Task SendAsync(string toName, string toEmail, string subject, string body, MailPriority priority, CancellationToken cancellationToken)
     {
         if (string.IsNullOrWhiteSpace(toEmail))
         {
@@ -61,8 +71,9 @@ public class EmailSenderService : IEmailSenderService
             Body = body,
             IsBodyHtml = true,
             // ReplyToList = { new MailAddress() },
+            Priority = priority,
         };
-
+        AddConfiguredBccRecipients(message);
 
         await EmailSendLogging.RunSendAndLogAsync(
             async () =>
@@ -79,7 +90,42 @@ public class EmailSenderService : IEmailSenderService
     }
 
     /// <inheritdoc />
+    public async Task SendAsync(string toName, string toEmail, string subject, string textBody, string htmlBody, CancellationToken cancellationToken)
+        => await SendAsync(
+            toName,
+            toEmail,
+            subject,
+            textBody,
+            htmlBody,
+            XMessagePriority.Normal,
+            cancellationToken);
+
+    /// <inheritdoc />
     public async Task SendAsync(string toName, string toEmail, string subject, string textBody, string htmlBody, IReadOnlyCollection<IFormFile>? attachments, CancellationToken cancellationToken)
+        => await SendAsync(
+            toName,
+            toEmail,
+            subject,
+            textBody,
+            htmlBody,
+            XMessagePriority.Normal,
+            attachments,
+            cancellationToken);
+
+    /// <inheritdoc />
+    public async Task SendAsync(string toName, string toEmail, string subject, string textBody, string htmlBody, XMessagePriority priority, CancellationToken cancellationToken)
+        => await SendAsync(
+            toName,
+            toEmail,
+            subject,
+            textBody,
+            htmlBody,
+            priority,
+            null,
+            cancellationToken);
+
+    /// <inheritdoc />
+    public async Task SendAsync(string toName, string toEmail, string subject, string textBody, string htmlBody, XMessagePriority priority, IReadOnlyCollection<IFormFile> attachments, CancellationToken cancellationToken)
     {
         if (string.IsNullOrWhiteSpace(toEmail))
         {
@@ -106,6 +152,8 @@ public class EmailSenderService : IEmailSenderService
         using var message = new MimeMessage();
         message.From.Add(new MailboxAddress(_options.FromUserName, _options.FromUserAddress));
         message.To.Add(new MailboxAddress(toName, toEmail));
+        AddConfiguredBccRecipients(message);
+        message.XPriority = priority;
         message.Subject = subject;
         // message.ReplyTo.Add(new MailboxAddress(_options.FromUserName, _options.FromUserAddress));
 
@@ -163,6 +211,19 @@ public class EmailSenderService : IEmailSenderService
 
     /// <inheritdoc />
     public async Task<Dictionary<string, string>> SendAsyncWithContentIds(string toName, string toEmail, string subject, string textBody, string htmlBody, IReadOnlyCollection<IFormFile>? attachments, IReadOnlyCollection<KeyValuePair<string, string>>? contentIdMap, CancellationToken cancellationToken)
+        => await SendAsyncWithContentIds(
+            toName,
+            toEmail,
+            subject,
+            textBody,
+            htmlBody,
+            XMessagePriority.Normal,
+            attachments,
+            contentIdMap,
+            cancellationToken);
+
+    /// <inheritdoc />
+    public async Task<Dictionary<string, string>> SendAsyncWithContentIds(string toName, string toEmail, string subject, string textBody, string htmlBody, XMessagePriority priority, IReadOnlyCollection<IFormFile> attachments, IReadOnlyCollection<KeyValuePair<string, string>> contentIdMap, CancellationToken cancellationToken)
     {
         if (string.IsNullOrWhiteSpace(toEmail))
         {
@@ -191,6 +252,8 @@ public class EmailSenderService : IEmailSenderService
         using var message = new MimeMessage();
         message.From.Add(new MailboxAddress(_options.FromUserName, _options.FromUserAddress));
         message.To.Add(new MailboxAddress(toName, toEmail));
+        AddConfiguredBccRecipients(message);
+        message.XPriority = priority;
         message.Subject = subject;
 
         var builder = new BodyBuilder
@@ -261,5 +324,31 @@ public class EmailSenderService : IEmailSenderService
         }
 
         return resultContentIdMap;
+    }
+
+    private void AddConfiguredBccRecipients(MimeMessage message)
+    {
+        if (_options.BccRecipients.Count == 0)
+        {
+            return;
+        }
+
+        foreach (var recipient in _options.BccRecipients.Where(recipient => !string.IsNullOrWhiteSpace(recipient?.Email)))
+        {
+            message.Bcc.Add(new MailboxAddress(recipient.Name, recipient.Email));
+        }
+    }
+
+    private void AddConfiguredBccRecipients(MailMessage message)
+    {
+        if (_options.BccRecipients.Count == 0)
+        {
+            return;
+        }
+
+        foreach (var recipient in _options.BccRecipients.Where(recipient => !string.IsNullOrWhiteSpace(recipient?.Email)))
+        {
+            message.Bcc.Add(new MailAddress(recipient.Email, recipient.Name));
+        }
     }
 }
