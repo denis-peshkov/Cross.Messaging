@@ -1,5 +1,6 @@
 namespace Cross.Messaging.Tests.Email.Extensions;
 
+[Category("Unit")]
 public sealed class EmailExtensionsTests
 {
     private static IConfiguration BuildConfig(Action<Dictionary<string, string?>>? extra = null)

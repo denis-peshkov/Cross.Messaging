@@ -57,8 +57,13 @@ services.AddEmailSender(configuration);
 `IEmailSenderService` currently exposes:
 
 - `SendAsync(toName, toEmail, subject, body, cancellationToken)`
+- `SendAsync(toName, toEmail, subject, body, priority, cancellationToken)`
+- `SendAsync(toName, toEmail, subject, textBody, htmlBody, cancellationToken)`
+- `SendAsync(toName, toEmail, subject, textBody, htmlBody, priority, cancellationToken)`
 - `SendAsync(toName, toEmail, subject, textBody, htmlBody, attachments, cancellationToken)`
+- `SendAsync(toName, toEmail, subject, textBody, htmlBody, priority, attachments, cancellationToken)`
 - `SendAsyncWithContentIds(toName, toEmail, subject, textBody, htmlBody, attachments, contentIdMap, cancellationToken)`
+- `SendAsyncWithContentIds(toName, toEmail, subject, textBody, htmlBody, priority, attachments, contentIdMap, cancellationToken)`
 
 If you use attachment overloads, pass `IReadOnlyCollection<IFormFile>?` (`Microsoft.AspNetCore.Http`).
 
@@ -71,6 +76,7 @@ await emailSender.SendAsync(
     subject: "Hello",
     textBody: "Plain text body",
     htmlBody: "<p>HTML body</p>",
+    priority: XMessagePriority.Normal,
     attachments: null,
     cancellationToken: cancellationToken);
 ```
@@ -88,10 +94,20 @@ await emailSender.SendAsync(
     "SmtpPassword": "password",
     "FromUserName": "App Messaging",
     "FromUserAddress": "no-reply@example.com",
-    "RecipientOverride": ""
+    "RecipientOverride": "",
+    "BccRecipients": [
+      {
+        "Name": "Audit Bot",
+        "Email": "audit@example.com"
+      }
+    ]
   }
 }
 ```
+
+`BccRecipients` is optional; when configured, each entry is added to outgoing messages as BCC.
+
+Entries with empty `Email` are ignored.
 
 ## Unit tests
 
@@ -104,6 +120,22 @@ Tests use the **Given_When_Then** naming style:
 Example: `Given_ValidSmtpOptions_When_SendAsync_Then_UsesConfiguredHost`.
 
 Tests live in `Cross.Messaging.Tests/` (for example `Email/`, `Sms/`).
+
+Available NUnit categories:
+- `Unit`
+- `Integration`
+
+Run only unit tests (NUnit `Category=Unit`):
+
+```bash
+dotnet test Cross.Messaging.Tests/Cross.Messaging.Tests.csproj --filter "Category=Unit"
+```
+
+Run only integration tests (NUnit `Category=Integration`):
+
+```bash
+dotnet test Cross.Messaging.Tests/Cross.Messaging.Tests.csproj --filter "Category=Integration"
+```
 
 ## Code coverage
 

@@ -1,5 +1,6 @@
 namespace Cross.Messaging.Tests.Sms.Services;
 
+[Category("Unit")]
 public sealed class SmsSenderServiceTests
 {
     private static readonly string[] Destinations =
