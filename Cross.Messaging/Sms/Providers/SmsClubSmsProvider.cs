@@ -49,7 +49,7 @@ public sealed class SmsClubSmsProvider : ISmsProvider
         if (!response.IsSuccessStatusCode)
         {
             throw new InvalidOperationException(
-                $"SMSClub SMS send failed with status {(int)response.StatusCode} ({response.StatusCode}).");
+                $"SMSClub SMS send failed with status {(int)response.StatusCode} ({response.StatusCode}). Response: {Truncate(responseBody)}");
         }
 
         SmsClubSendResponse? parsed;
@@ -71,10 +71,24 @@ public sealed class SmsClubSmsProvider : ISmsProvider
         return info.Keys.First();
     }
 
+    private const int MaxErrorResponseLength = 512;
+
     private static string NormalizePhone(string destination)
     {
         var trimmed = destination.Trim();
         return trimmed.StartsWith("+", StringComparison.Ordinal) ? trimmed.Substring(1) : trimmed;
+    }
+
+    private static string Truncate(string value)
+    {
+        if (string.IsNullOrEmpty(value))
+        {
+            return string.Empty;
+        }
+
+        return value.Length <= MaxErrorResponseLength
+            ? value
+            : value.Substring(0, MaxErrorResponseLength) + "...";
     }
 
     private static readonly JsonSerializerOptions JsonOptions = new()

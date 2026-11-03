@@ -85,8 +85,9 @@ public sealed class SmsClubSmsProviderTests
 
         var act = () => sut.SendAsync("+40721234567", "hello", options, CancellationToken.None);
 
-        await act.Should().ThrowAsync<InvalidOperationException>()
-            .WithMessage("*401*");
+        var exception = await act.Should().ThrowAsync<InvalidOperationException>();
+        exception.Which.Message.Should().Contain("401");
+        exception.Which.Message.Should().Contain("unauthorized");
     }
 
     [Test]
