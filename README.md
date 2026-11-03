@@ -109,6 +109,42 @@ await emailSender.SendAsync(
 
 Entries with empty `Email` are ignored.
 
+### Register the SMS sender in DI
+
+```csharp
+services.AddSmsSender(configuration);
+```
+
+`AddSmsSender`:
+- binds the `MessagingSms` configuration section to `MessagingSmsOptions`
+- registers `ISmsSenderService` -> `SmsSenderService` (scoped)
+- registers the Telnyx SMS provider (`ISmsProvider`)
+
+`ISmsSenderService.SendAsync(destination, body, cancellationToken)` expects `destination` in E.164 (`+...`). The country is resolved from the calling code (longest-prefix match); NANP `+1` maps to `US`. If the country is missing from `CountryProviders`, `DefaultProvider` is used.
+
+### Sample SMS configuration
+
+```json
+{
+  "MessagingSms": {
+    "DefaultProvider": "Telnyx",
+    "CountryProviders": {
+      "US": "Telnyx",
+      "UA": "Telnyx"
+    },
+    "Providers": {
+      "Telnyx": {
+        "ApiKey": "KEY",
+        "From": "+15551234567",
+        "MessagingProfileId": ""
+      }
+    }
+  }
+}
+```
+
+`MessagingProfileId` is optional and used for Telnyx modes that require a messaging profile (for example number pool / alphanumeric sender).
+
 ## Unit tests
 
 Tests use the **Given_When_Then** naming style:

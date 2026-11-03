@@ -1,4 +1,4 @@
-namespace Cross.Messaging.Tests.Contracts;
+﻿namespace Cross.Messaging.Tests.Contracts;
 
 /// <summary>
 /// Compile-time and reflection checks that public services match their abstractions.
@@ -16,5 +16,11 @@ public sealed class ServiceContractsTests
     public void SmsSenderService_ShouldBeAssignableToISmsSenderService()
     {
         typeof(SmsSenderService).IsAssignableTo(typeof(ISmsSenderService)).Should().BeTrue();
+    }
+
+    [Test]
+    public void TelnyxSmsProvider_ShouldBeAssignableToISmsProvider()
+    {
+        typeof(TelnyxSmsProvider).IsAssignableTo(typeof(ISmsProvider)).Should().BeTrue();
     }
 }

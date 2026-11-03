@@ -1,4 +1,4 @@
-namespace Cross.Messaging.Sms.Services;
+﻿namespace Cross.Messaging.Sms.Services;
 
 /// <summary>
 /// Sends SMS notifications.

@@ -1,16 +1,24 @@
-// Global using directives
+﻿// Global using directives
 
 global using System;
 global using System.Collections.Generic;
 global using System.IO;
 global using System.Linq;
 global using System.Net;
+global using System.Net.Http;
+global using System.Net.Http.Headers;
 global using System.Net.Mail;
 global using System.Runtime.CompilerServices;
+global using System.Text;
+global using System.Text.Json;
 global using System.Threading;
 global using System.Threading.Tasks;
 global using Cross.Messaging.Email.Options;
 global using Cross.Messaging.Email.Services;
+global using Cross.Messaging.Sms;
+global using Cross.Messaging.Sms.Options;
+global using Cross.Messaging.Sms.Providers;
+global using Cross.Messaging.Sms.Services;
 global using MailKit.Security;
 global using Microsoft.AspNetCore.Http;
 global using Microsoft.Extensions.Configuration;

@@ -8,19 +8,29 @@ on:
       - master
       - release/*
       - hotfix/*
+      - dev
+      - feature/*
+      - fix/*
+      - chore/*
   pull_request:
+    types: [opened, synchronize, reopened]
     branches:
       - master
+      - release/*
+      - hotfix/*
+      - dev
   workflow_dispatch: # allows manual runs from the Actions tab
 
 jobs:
   build:
     permissions: # https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#defining-access-for-the-github_token-scopes
       contents: write
+      id-token: write
 
     env:
       BUILD_CONFIG: 'Release'
       SOLUTION: 'Cross.Messaging.slnx'
+      QUALITY_GATE_WAIT: ${{ github.event_name == 'pull_request' }}
 
     runs-on: ubuntu-22.04 # ubuntu-latest
 
@@ -30,6 +40,8 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0 # Disabling shallow clones is recommended for improving the relevancy of reporting
+          # Avoid persisting GITHUB_TOKEN so tag push can authenticate as TAGTOKEN (admin ruleset bypass).
+          persist-credentials: false
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
@@ -45,14 +57,15 @@ jobs:
         uses: NuGet/setup-nuget@v2.0.0
 
       - name: Setup GitVersion
-        uses: gittools/actions/gitversion/setup@v1.1.1
+        # v1.x only allows GV >=5.2 <6.1; 6.8.x needs actions v4.7.x
+        # https://github.com/GitTools/actions/blob/main/docs/versions.md
+        uses: gittools/actions/gitversion/setup@v4.7.0
         with:
-          versionSpec: 5.12.0
+          versionSpec: 6.8.2
 
       - name: Determine Version
-        uses: gittools/actions/gitversion/execute@v1.1.1
-        with:
-          useConfigFile: true
+        uses: gittools/actions/gitversion/execute@v4.7.0
+        # defaults to configFilePath: GitVersion.yml (useConfigFile removed in v3+/v4)
 
       - name: Restore dependencies
         run: dotnet restore
@@ -88,31 +101,79 @@ jobs:
         uses: sonarsource/sonarcloud-github-action@v5 # Ex: v4.0.0, See the latest version at https://github.com/marketplace/actions/sonarcloud-scan
         with:
           args: >
-            -Dsonar.organization=peshkov
+            -Dsonar.organization=denis-peshkov
             -Dsonar.projectKey=Cross.Messaging
+            -Dsonar.projectName=Cross.Messaging
             -Dsonar.cs.opencover.reportsPaths=TestResults/**/coverage.opencover.xml
             -Dsonar.sources=Cross.Messaging/
             -Dsonar.tests=Cross.Messaging.Tests/
+            -Dsonar.qualitygate.wait=${{ env.QUALITY_GATE_WAIT }}
             -Dsonar.verbose=true
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
+      - name: Update nuspec version
+        uses: denis-peshkov/update-nuspec-action@v2
+
       - name: Nuget Pack
         run: nuget pack Cross.Messaging/config.nuspec -Symbols -Version ${{ env.semVer }}
 
+      # Git tags: only stable SemVer on master (release/hotfix without auto v* tag).
+      # Idempotent on rerun: accept existing tag only when it points at this commit; never overwrite.
       - name: Create git Tag
-        if: ${{ contains('refs/heads/master', github.ref) || contains('refs/heads/release', github.ref) || contains('refs/heads/hotfix', github.ref) }}
+        if: >
+          !contains(env.semVer, '-') &&
+          github.ref == 'refs/heads/master'
         run: |
+          if git rev-parse -q --verify "refs/tags/v${{ env.semVer }}" >/dev/null; then
+            EXISTING="$(git rev-list -n 1 "refs/tags/v${{ env.semVer }}")"
+            if [ "${EXISTING}" = "${{ github.sha }}" ]; then
+              echo "Tag v${{ env.semVer }} already points at ${{ github.sha }}; skipping create."
+              exit 0
+            fi
+            echo "::error::Tag v${{ env.semVer }} already exists at ${EXISTING}, expected ${{ github.sha }}. Refusing to overwrite."
+            exit 1
+          fi
           git tag v${{ env.semVer }}
 
       - name: Push git Tag
-        if: ${{ contains(fromJson('["refs/heads/master", "refs/heads/release", "refs/heads/hotfix"]'), github.ref) }}
+        if: >
+          !contains(env.semVer, '-') &&
+          github.ref == 'refs/heads/master'
         run: |
           git config --global user.name 'Denis Peshkov'
           git config --global user.email 'denis.peshkov@outlook.com'
           git remote set-url origin https://x-access-token:${{ secrets.TAGTOKEN }}@github.com/${{ github.repository }}
+          # Prefer remote tip when present so a partial create+failed-push rerun stays safe.
+          LS_OUT="$(git ls-remote --tags origin "refs/tags/v${{ env.semVer }}" || true)"
+          if [ -n "${LS_OUT}" ]; then
+            # Annotated → peeled ^{} commit; lightweight → tag tip.
+            REMOTE="$(printf '%s\n' "${LS_OUT}" | awk '/\^\{\}$/ { print $1; exit }')"
+            [ -n "${REMOTE}" ] || REMOTE="$(printf '%s\n' "${LS_OUT}" | awk '{ print $1; exit }')"
+            if [ "${REMOTE}" = "${{ github.sha }}" ]; then
+              echo "Remote tag v${{ env.semVer }} already points at ${{ github.sha }}; skipping push."
+              exit 0
+            fi
+            echo "::error::Remote tag v${{ env.semVer }} already exists at ${REMOTE}, expected ${{ github.sha }}. Refusing to overwrite."
+            exit 1
+          fi
           git push origin v${{ env.semVer }}
 
+      - name: NuGet login (OIDC → temp API key)
+        if: >
+          github.ref == 'refs/heads/master' ||
+          startsWith(github.ref, 'refs/heads/release/') ||
+          startsWith(github.ref, 'refs/heads/hotfix/') ||
+          github.ref == 'refs/heads/dev'
+        uses: NuGet/login@v1
+        id: nuget-login
+        with:
+          user: peshkov
+
       - name: Nuget Push
-        if: ${{ !startsWith(github.ref, 'refs/pull') }}
-        run: nuget push **/Cross.Messaging.${{ env.semVer }}.symbols.nupkg -ApiKey ${{ secrets.NUGET_API_KEY }} -Source "https://api.nuget.org/v3/index.json" -SkipDuplicate
+        if: >
+          github.ref == 'refs/heads/master' ||
+          startsWith(github.ref, 'refs/heads/release/') ||
+          startsWith(github.ref, 'refs/heads/hotfix/') ||
+          github.ref == 'refs/heads/dev'
+        run: nuget push **/Cross.Messaging.${{ env.semVer }}.symbols.nupkg -ApiKey ${{ steps.nuget-login.outputs.NUGET_API_KEY }} -Source "https://api.nuget.org/v3/index.json" -SkipDuplicate

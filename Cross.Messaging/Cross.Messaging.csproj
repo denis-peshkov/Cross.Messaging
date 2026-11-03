@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.1;net6.0;net7.0;net8.0;net9.0;net10.0</TargetFrameworks>
@@ -18,9 +18,11 @@
     <MicrosoftAspNetCoreHttpAbstractions>2.3.0</MicrosoftAspNetCoreHttpAbstractions>
     <MicrosoftExtensionsConfiguration>8.0.0</MicrosoftExtensionsConfiguration>
     <MicrosoftExtensionsDependencyInjectionAbstractions>8.0.2</MicrosoftExtensionsDependencyInjectionAbstractions>
+    <MicrosoftExtensionsHttp>8.0.1</MicrosoftExtensionsHttp>
     <MicrosoftExtensionsLoggingAbstractions>8.0.3</MicrosoftExtensionsLoggingAbstractions>
     <MicrosoftExtensionsOptions>8.0.2</MicrosoftExtensionsOptions>
     <MicrosoftExtensionsOptionsConfigurationExtensions>8.0.0</MicrosoftExtensionsOptionsConfigurationExtensions>
+    <SystemTextJson>8.0.5</SystemTextJson>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'net6.0'">
@@ -28,9 +30,11 @@
     <MicrosoftAspNetCoreHttpAbstractions>2.3.0</MicrosoftAspNetCoreHttpAbstractions>
     <MicrosoftExtensionsConfiguration>8.0.0</MicrosoftExtensionsConfiguration>
     <MicrosoftExtensionsDependencyInjectionAbstractions>8.0.2</MicrosoftExtensionsDependencyInjectionAbstractions>
+    <MicrosoftExtensionsHttp>8.0.1</MicrosoftExtensionsHttp>
     <MicrosoftExtensionsLoggingAbstractions>8.0.3</MicrosoftExtensionsLoggingAbstractions>
     <MicrosoftExtensionsOptions>8.0.2</MicrosoftExtensionsOptions>
     <MicrosoftExtensionsOptionsConfigurationExtensions>8.0.0</MicrosoftExtensionsOptionsConfigurationExtensions>
+    <SystemTextJson>8.0.5</SystemTextJson>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'net7.0'">
@@ -38,9 +42,11 @@
     <MicrosoftAspNetCoreHttpAbstractions>2.3.0</MicrosoftAspNetCoreHttpAbstractions>
     <MicrosoftExtensionsConfiguration>8.0.0</MicrosoftExtensionsConfiguration>
     <MicrosoftExtensionsDependencyInjectionAbstractions>8.0.2</MicrosoftExtensionsDependencyInjectionAbstractions>
+    <MicrosoftExtensionsHttp>8.0.1</MicrosoftExtensionsHttp>
     <MicrosoftExtensionsLoggingAbstractions>8.0.3</MicrosoftExtensionsLoggingAbstractions>
     <MicrosoftExtensionsOptions>8.0.2</MicrosoftExtensionsOptions>
     <MicrosoftExtensionsOptionsConfigurationExtensions>8.0.0</MicrosoftExtensionsOptionsConfigurationExtensions>
+    <SystemTextJson>8.0.5</SystemTextJson>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'net8.0'">
@@ -48,9 +54,11 @@
     <MicrosoftAspNetCoreHttpAbstractions>2.3.0</MicrosoftAspNetCoreHttpAbstractions>
     <MicrosoftExtensionsConfiguration>8.0.0</MicrosoftExtensionsConfiguration>
     <MicrosoftExtensionsDependencyInjectionAbstractions>8.0.2</MicrosoftExtensionsDependencyInjectionAbstractions>
+    <MicrosoftExtensionsHttp>8.0.1</MicrosoftExtensionsHttp>
     <MicrosoftExtensionsLoggingAbstractions>8.0.3</MicrosoftExtensionsLoggingAbstractions>
     <MicrosoftExtensionsOptions>8.0.2</MicrosoftExtensionsOptions>
     <MicrosoftExtensionsOptionsConfigurationExtensions>8.0.0</MicrosoftExtensionsOptionsConfigurationExtensions>
+    <SystemTextJson>8.0.5</SystemTextJson>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'net9.0'">
@@ -58,9 +66,11 @@
     <MicrosoftAspNetCoreHttpAbstractions>2.3.0</MicrosoftAspNetCoreHttpAbstractions>
     <MicrosoftExtensionsConfiguration>9.0.15</MicrosoftExtensionsConfiguration>
     <MicrosoftExtensionsDependencyInjectionAbstractions>9.0.15</MicrosoftExtensionsDependencyInjectionAbstractions>
+    <MicrosoftExtensionsHttp>9.0.15</MicrosoftExtensionsHttp>
     <MicrosoftExtensionsLoggingAbstractions>9.0.15</MicrosoftExtensionsLoggingAbstractions>
     <MicrosoftExtensionsOptions>9.0.15</MicrosoftExtensionsOptions>
     <MicrosoftExtensionsOptionsConfigurationExtensions>9.0.15</MicrosoftExtensionsOptionsConfigurationExtensions>
+    <SystemTextJson>9.0.15</SystemTextJson>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'net10.0'">
@@ -68,9 +78,11 @@
     <MicrosoftAspNetCoreHttpAbstractions>2.3.0</MicrosoftAspNetCoreHttpAbstractions>
     <MicrosoftExtensionsConfiguration>10.0.7</MicrosoftExtensionsConfiguration>
     <MicrosoftExtensionsDependencyInjectionAbstractions>10.0.7</MicrosoftExtensionsDependencyInjectionAbstractions>
+    <MicrosoftExtensionsHttp>10.0.7</MicrosoftExtensionsHttp>
     <MicrosoftExtensionsLoggingAbstractions>10.0.7</MicrosoftExtensionsLoggingAbstractions>
     <MicrosoftExtensionsOptions>10.0.7</MicrosoftExtensionsOptions>
     <MicrosoftExtensionsOptionsConfigurationExtensions>10.0.7</MicrosoftExtensionsOptionsConfigurationExtensions>
+    <SystemTextJson>10.0.7</SystemTextJson>
   </PropertyGroup>
 
   <ItemGroup>
@@ -83,9 +95,11 @@
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="$(MicrosoftAspNetCoreHttpAbstractions)" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="$(MicrosoftExtensionsConfiguration)" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="$(MicrosoftExtensionsDependencyInjectionAbstractions)" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="$(MicrosoftExtensionsHttp)" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="$(MicrosoftExtensionsLoggingAbstractions)" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="$(MicrosoftExtensionsOptions)" />
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="$(MicrosoftExtensionsOptionsConfigurationExtensions)" />
+    <PackageReference Include="System.Text.Json" Version="$(SystemTextJson)" />
 
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="10.0.203" PrivateAssets="All" />
   </ItemGroup>

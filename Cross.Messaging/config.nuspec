@@ -9,11 +9,12 @@
     <projectUrl>https://github.com/denis-peshkov/Cross.Messaging</projectUrl>
     <repository type="git" url="https://github.com/denis-peshkov/Cross.Messaging.git" />
     <description>Helpers and services for sending notifications (email, SMS) and Telegram-related types, with DI-friendly configuration.</description>
-    <tags>Email SMS Telegram Messaging SMTP MailKit Configuration DependencyInjection NetCore</tags>
+    <tags>Email SMS Telegram Messaging SMTP MailKit Telnyx Configuration DependencyInjection NetCore</tags>
     <readme>README.md</readme>
     <license type="file">LICENSE</license>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <releaseNotes><![CDATA[
+- SMS: added Telnyx provider, country→provider routing from E.164, MessagingSms options, and AddSmsSender DI extension.
 - Email: added configurable `BccRecipients` in `MessagingEmail` section (`Name`, `Email`) for send flows.
 - Email API: added priority overloads for `SendAsync(...)` and `SendAsyncWithContentIds(...)`, plus `SendAsync(...)` overloads without attachments.
 - Tests: added category tags (`Unit`, `Integration`) and expanded service tests for new overloads.
@@ -25,54 +26,66 @@
         <dependency id="Microsoft.AspNetCore.Http.Abstractions" version="2.3.0" />
         <dependency id="Microsoft.Extensions.Configuration" version="8.0.0" />
         <dependency id="Microsoft.Extensions.DependencyInjection.Abstractions" version="8.0.2" />
+        <dependency id="Microsoft.Extensions.Http" version="8.0.1" />
         <dependency id="Microsoft.Extensions.Logging.Abstractions" version="8.0.3" />
         <dependency id="Microsoft.Extensions.Options" version="8.0.2" />
         <dependency id="Microsoft.Extensions.Options.ConfigurationExtensions" version="8.0.0" />
+        <dependency id="System.Text.Json" version="8.0.5" />
       </group>
       <group targetFramework="net6.0">
         <dependency id="MailKit" version="4.16.0" />
         <dependency id="Microsoft.AspNetCore.Http.Abstractions" version="2.3.0" />
         <dependency id="Microsoft.Extensions.Configuration" version="8.0.0" />
         <dependency id="Microsoft.Extensions.DependencyInjection.Abstractions" version="8.0.2" />
+        <dependency id="Microsoft.Extensions.Http" version="8.0.1" />
         <dependency id="Microsoft.Extensions.Logging.Abstractions" version="8.0.3" />
         <dependency id="Microsoft.Extensions.Options" version="8.0.2" />
         <dependency id="Microsoft.Extensions.Options.ConfigurationExtensions" version="8.0.0" />
+        <dependency id="System.Text.Json" version="8.0.5" />
       </group>
       <group targetFramework="net7.0">
         <dependency id="MailKit" version="4.16.0" />
         <dependency id="Microsoft.AspNetCore.Http.Abstractions" version="2.3.0" />
         <dependency id="Microsoft.Extensions.Configuration" version="8.0.0" />
         <dependency id="Microsoft.Extensions.DependencyInjection.Abstractions" version="8.0.2" />
+        <dependency id="Microsoft.Extensions.Http" version="8.0.1" />
         <dependency id="Microsoft.Extensions.Logging.Abstractions" version="8.0.3" />
         <dependency id="Microsoft.Extensions.Options" version="8.0.2" />
         <dependency id="Microsoft.Extensions.Options.ConfigurationExtensions" version="8.0.0" />
+        <dependency id="System.Text.Json" version="8.0.5" />
       </group>
       <group targetFramework="net8.0">
         <dependency id="MailKit" version="4.16.0" />
         <dependency id="Microsoft.AspNetCore.Http.Abstractions" version="2.3.0" />
         <dependency id="Microsoft.Extensions.Configuration" version="8.0.0" />
         <dependency id="Microsoft.Extensions.DependencyInjection.Abstractions" version="8.0.2" />
+        <dependency id="Microsoft.Extensions.Http" version="8.0.1" />
         <dependency id="Microsoft.Extensions.Logging.Abstractions" version="8.0.3" />
         <dependency id="Microsoft.Extensions.Options" version="8.0.2" />
         <dependency id="Microsoft.Extensions.Options.ConfigurationExtensions" version="8.0.0" />
+        <dependency id="System.Text.Json" version="8.0.5" />
       </group>
       <group targetFramework="net9.0">
         <dependency id="MailKit" version="4.16.0" />
         <dependency id="Microsoft.AspNetCore.Http.Abstractions" version="2.3.0" />
         <dependency id="Microsoft.Extensions.Configuration" version="9.0.15" />
         <dependency id="Microsoft.Extensions.DependencyInjection.Abstractions" version="9.0.15" />
+        <dependency id="Microsoft.Extensions.Http" version="9.0.15" />
         <dependency id="Microsoft.Extensions.Logging.Abstractions" version="9.0.15" />
         <dependency id="Microsoft.Extensions.Options" version="9.0.15" />
         <dependency id="Microsoft.Extensions.Options.ConfigurationExtensions" version="9.0.15" />
+        <dependency id="System.Text.Json" version="9.0.15" />
       </group>
       <group targetFramework="net10.0">
         <dependency id="MailKit" version="4.16.0" />
         <dependency id="Microsoft.AspNetCore.Http.Abstractions" version="2.3.0" />
         <dependency id="Microsoft.Extensions.Configuration" version="10.0.7" />
         <dependency id="Microsoft.Extensions.DependencyInjection.Abstractions" version="10.0.7" />
+        <dependency id="Microsoft.Extensions.Http" version="10.0.7" />
         <dependency id="Microsoft.Extensions.Logging.Abstractions" version="10.0.7" />
         <dependency id="Microsoft.Extensions.Options" version="10.0.7" />
         <dependency id="Microsoft.Extensions.Options.ConfigurationExtensions" version="10.0.7" />
+        <dependency id="System.Text.Json" version="10.0.7" />
       </group>
     </dependencies>
   </metadata>
