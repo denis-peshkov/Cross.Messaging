@@ -222,8 +222,19 @@ internal static class PhoneCountryResolver
     /// <param name="countryCode">Resolved ISO country code when the method returns <c>true</c>.</param>
     /// <returns><c>true</c> when a calling-code match is found; otherwise <c>false</c>.</returns>
     public static bool TryResolve(string destination, out string countryCode)
+        => TryResolve(destination, out countryCode, out _);
+
+    /// <summary>
+    /// Tries to resolve an ISO country code and calling-code prefix from an E.164 phone number.
+    /// </summary>
+    /// <param name="destination">Phone number expected in E.164 format (leading <c>+</c>).</param>
+    /// <param name="countryCode">Resolved ISO country code when the method returns <c>true</c>.</param>
+    /// <param name="callingCode">Matched calling-code digits when the method returns <c>true</c>.</param>
+    /// <returns><c>true</c> when a calling-code match is found; otherwise <c>false</c>.</returns>
+    public static bool TryResolve(string destination, out string countryCode, out string callingCode)
     {
         countryCode = null!;
+        callingCode = null!;
 
         if (string.IsNullOrWhiteSpace(destination))
         {
@@ -249,6 +260,7 @@ internal static class PhoneCountryResolver
             if (CallingCodeToCountry.TryGetValue(prefix, out var iso))
             {
                 countryCode = iso;
+                callingCode = prefix;
                 return true;
             }
         }

@@ -56,10 +56,11 @@ public class SmsSenderService : ISmsSenderService
                 $"SMS provider settings for '{providerName}' are missing under MessagingSms:Providers.");
         }
 
+        var maskedDestination = PhoneDestinationMask.Mask(destination);
         _logger.LogInformation(
             "Sending SMS via {Provider} to {Destination}.",
             provider.Name,
-            destination);
+            maskedDestination);
 
         try
         {
@@ -75,7 +76,7 @@ public class SmsSenderService : ISmsSenderService
         }
         catch (Exception ex) when (ex is not OperationCanceledException and not ArgumentException)
         {
-            _logger.LogError(ex, "Failed to send SMS via {Provider} to {Destination}.", provider.Name, destination);
+            _logger.LogError(ex, "Failed to send SMS via {Provider} to {Destination}.", provider.Name, maskedDestination);
             if (ex is InvalidOperationException)
             {
                 throw;
