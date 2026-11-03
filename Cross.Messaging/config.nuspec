@@ -14,7 +14,7 @@
     <license type="file">LICENSE</license>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <releaseNotes><![CDATA[
-- SMS: added Telnyx provider, country→provider routing from E.164, MessagingSms options, and AddSmsSender DI extension.
+- SMS: added Telnyx and SMSClub providers, country→provider routing from E.164 (e.g. RO→SMSClub), MessagingSms options, and AddSmsSender DI extension.
 - Email: added configurable `BccRecipients` in `MessagingEmail` section (`Name`, `Email`) for send flows.
 - Email API: added priority overloads for `SendAsync(...)` and `SendAsyncWithContentIds(...)`, plus `SendAsync(...)` overloads without attachments.
 - Tests: added category tags (`Unit`, `Integration`) and expanded service tests for new overloads.

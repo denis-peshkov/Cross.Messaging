@@ -8,11 +8,12 @@ public sealed class SmsExtensionsTests
         var d = new Dictionary<string, string?>
         {
             [$"{MessagingSmsOptions.SectionName}:DefaultProvider"] = "Telnyx",
-            [$"{MessagingSmsOptions.SectionName}:CountryProviders:US"] = "Telnyx",
-            [$"{MessagingSmsOptions.SectionName}:CountryProviders:UA"] = "Telnyx",
+            [$"{MessagingSmsOptions.SectionName}:CountryProviders:RO"] = "SMSClub",
             [$"{MessagingSmsOptions.SectionName}:Providers:Telnyx:ApiKey"] = "KEY",
             [$"{MessagingSmsOptions.SectionName}:Providers:Telnyx:From"] = "+15551234567",
             [$"{MessagingSmsOptions.SectionName}:Providers:Telnyx:MessagingProfileId"] = "",
+            [$"{MessagingSmsOptions.SectionName}:Providers:SMSClub:ApiKey"] = "TOKEN",
+            [$"{MessagingSmsOptions.SectionName}:Providers:SMSClub:From"] = "MySender",
         };
         extra?.Invoke(d);
         return new ConfigurationBuilder().AddInMemoryCollection(d).Build();
@@ -31,10 +32,14 @@ public sealed class SmsExtensionsTests
 
         returned.Should().BeSameAs(services);
         options.DefaultProvider.Should().Be("Telnyx");
-        options.CountryProviders.Should().ContainKey("US").WhoseValue.Should().Be("Telnyx");
+        options.CountryProviders.Should().ContainKey("RO").WhoseValue.Should().Be("SMSClub");
+        options.CountryProviders.Should().HaveCount(1);
         options.Providers.Should().ContainKey("Telnyx");
         options.Providers["Telnyx"].ApiKey.Should().Be("KEY");
         options.Providers["Telnyx"].From.Should().Be("+15551234567");
+        options.Providers.Should().ContainKey("SMSClub");
+        options.Providers["SMSClub"].ApiKey.Should().Be("TOKEN");
+        options.Providers["SMSClub"].From.Should().Be("MySender");
         senderDescriptor.Should().NotBeNull();
         senderDescriptor!.ImplementationType.Should().Be(typeof(SmsSenderService));
     }

@@ -8,6 +8,7 @@ public sealed class PhoneCountryResolverTests
     [TestCase("+447911123456", "GB")]
     [TestCase("+4915123456789", "DE")]
     [TestCase("+8613812345678", "CN")]
+    [TestCase("+40721234567", "RO")]
     public void TryResolve_WhenValidE164_ReturnsExpectedCountry(string destination, string expected)
     {
         var ok = PhoneCountryResolver.TryResolve(destination, out var country);

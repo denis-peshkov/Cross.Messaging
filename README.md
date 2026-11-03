@@ -118,7 +118,7 @@ services.AddSmsSender(configuration);
 `AddSmsSender`:
 - binds the `MessagingSms` configuration section to `MessagingSmsOptions`
 - registers `ISmsSenderService` -> `SmsSenderService` (scoped)
-- registers the Telnyx SMS provider (`ISmsProvider`)
+- registers SMS providers (`ISmsProvider`): Telnyx, SMSClub
 
 `ISmsSenderService.SendAsync(destination, body, cancellationToken)` expects `destination` in E.164 (`+...`). The country is resolved from the calling code (longest-prefix match); NANP `+1` maps to `US`. If the country is missing from `CountryProviders`, `DefaultProvider` is used.
 
@@ -129,14 +129,17 @@ services.AddSmsSender(configuration);
   "MessagingSms": {
     "DefaultProvider": "Telnyx",
     "CountryProviders": {
-      "US": "Telnyx",
-      "UA": "Telnyx"
+      "RO": "SMSClub"
     },
     "Providers": {
       "Telnyx": {
         "ApiKey": "KEY",
         "From": "+15551234567",
         "MessagingProfileId": ""
+      },
+      "SMSClub": {
+        "ApiKey": "TOKEN",
+        "From": "MySender"
       }
     }
   }
@@ -144,6 +147,8 @@ services.AddSmsSender(configuration);
 ```
 
 `MessagingProfileId` is optional and used for Telnyx modes that require a messaging profile (for example number pool / alphanumeric sender).
+
+For SMSClub, `ApiKey` is the Bearer token and `From` is the alphanumeric sender name (`src_addr`).
 
 ## Unit tests
 

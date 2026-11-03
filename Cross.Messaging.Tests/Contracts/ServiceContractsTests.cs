@@ -23,4 +23,10 @@ public sealed class ServiceContractsTests
     {
         typeof(TelnyxSmsProvider).IsAssignableTo(typeof(ISmsProvider)).Should().BeTrue();
     }
+
+    [Test]
+    public void SmsClubSmsProvider_ShouldBeAssignableToISmsProvider()
+    {
+        typeof(SmsClubSmsProvider).IsAssignableTo(typeof(ISmsProvider)).Should().BeTrue();
+    }
 }

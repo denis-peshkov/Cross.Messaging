@@ -19,9 +19,15 @@ public static class SmsExtensions
         {
             client.BaseAddress = new Uri("https://api.telnyx.com/");
         });
-
         services.TryAddEnumerable(ServiceDescriptor.Scoped<ISmsProvider, TelnyxSmsProvider>(sp =>
             sp.GetRequiredService<TelnyxSmsProvider>()));
+
+        services.AddHttpClient<SmsClubSmsProvider>(client =>
+        {
+            client.BaseAddress = new Uri("https://im.smsclub.mobi/");
+        });
+        services.TryAddEnumerable(ServiceDescriptor.Scoped<ISmsProvider, SmsClubSmsProvider>(sp =>
+            sp.GetRequiredService<SmsClubSmsProvider>()));
 
         services.TryAddScoped<ISmsSenderService, SmsSenderService>();
 

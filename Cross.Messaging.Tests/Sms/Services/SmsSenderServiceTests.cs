@@ -46,6 +46,33 @@ public sealed class SmsSenderServiceTests
     }
 
     [Test]
+    public async Task SendAsync_WhenRoDestination_UsesSmsClubProvider()
+    {
+        var provider = new Mock<ISmsProvider>();
+        provider.SetupGet(p => p.Name).Returns("SMSClub");
+        provider
+            .Setup(p => p.SendAsync("+40721234567", "hi", It.IsAny<MessagingSmsProviderOptions>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync("id-ro");
+
+        var options = CreateOptions();
+        options.DefaultProvider = "Telnyx";
+        options.CountryProviders["RO"] = "SMSClub";
+        options.Providers["SMSClub"] = new MessagingSmsProviderOptions
+        {
+            ApiKey = "TOKEN",
+            From = "MySender",
+        };
+
+        var sut = CreateSut(options, provider.Object);
+        var id = await sut.SendAsync("+40721234567", "hi", CancellationToken.None);
+
+        id.Should().Be("id-ro");
+        provider.Verify(
+            p => p.SendAsync("+40721234567", "hi", It.IsAny<MessagingSmsProviderOptions>(), It.IsAny<CancellationToken>()),
+            Times.Once);
+    }
+
+    [Test]
     public async Task SendAsync_WhenCountryNotMapped_UsesDefaultProvider()
     {
         var provider = new Mock<ISmsProvider>();
@@ -84,7 +111,7 @@ public sealed class SmsSenderServiceTests
             DefaultProvider = "Telnyx",
             CountryProviders = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
             {
-                ["US"] = "Telnyx",
+                ["RO"] = "SMSClub",
             },
             Providers = new Dictionary<string, MessagingSmsProviderOptions>(StringComparer.OrdinalIgnoreCase)
             {
@@ -92,6 +119,11 @@ public sealed class SmsSenderServiceTests
                 {
                     ApiKey = "KEY",
                     From = "+15550001111",
+                },
+                ["SMSClub"] = new MessagingSmsProviderOptions
+                {
+                    ApiKey = "TOKEN",
+                    From = "MySender",
                 },
             },
         };
