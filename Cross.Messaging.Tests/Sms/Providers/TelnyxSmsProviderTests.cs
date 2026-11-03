@@ -77,8 +77,9 @@ public sealed class TelnyxSmsProviderTests
 
         var act = () => sut.SendAsync("+15551234567", "hello", options, CancellationToken.None);
 
-        await act.Should().ThrowAsync<InvalidOperationException>()
-            .WithMessage("*400*");
+        var exception = await act.Should().ThrowAsync<InvalidOperationException>();
+        exception.Which.Message.Should().Contain("400");
+        exception.Which.Message.Should().Contain("bad");
     }
 
     [Test]

@@ -58,7 +58,7 @@ public sealed class TelnyxSmsProvider : ISmsProvider
         if (!response.IsSuccessStatusCode)
         {
             throw new InvalidOperationException(
-                $"Telnyx SMS send failed with status {(int)response.StatusCode} ({response.StatusCode}).");
+                $"Telnyx SMS send failed with status {(int)response.StatusCode} ({response.StatusCode}). Response: {Truncate(responseBody)}");
         }
 
         TelnyxMessageResponse? parsed;
@@ -78,6 +78,20 @@ public sealed class TelnyxSmsProvider : ISmsProvider
         }
 
         return id!;
+    }
+
+    private const int MaxErrorResponseLength = 512;
+
+    private static string Truncate(string value)
+    {
+        if (string.IsNullOrEmpty(value))
+        {
+            return string.Empty;
+        }
+
+        return value.Length <= MaxErrorResponseLength
+            ? value
+            : value.Substring(0, MaxErrorResponseLength) + "...";
     }
 
     private static readonly JsonSerializerOptions JsonOptions = new()
