@@ -11,6 +11,7 @@ global using System.Net.Sockets;
 global using System.Text;
 global using System.Threading;
 global using System.Threading.Tasks;
+global using Cross.Messaging.Email;
 global using Cross.Messaging.Email.Extensions;
 global using Cross.Messaging.Email.Options;
 global using Cross.Messaging.Email.Services;

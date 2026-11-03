@@ -1,4 +1,4 @@
-namespace Cross.Messaging.Email.Services;
+﻿namespace Cross.Messaging.Email.Services;
 
 /// <summary>
 /// Shared try / catch / log for SMTP send operations (System.Net.Mail and MailKit).
@@ -20,18 +20,23 @@ internal static class EmailSendLogging
         string recipientEmail,
         IReadOnlyCollection<IFormFile>? attachments = null)
     {
+        var maskedRecipient = EmailRecipientMask.Mask(recipientEmail);
+
         try
         {
             await send();
-            logger.LogInformation("Email sent to {Recipient} with {AttachmentCount} attachment(s)", recipientEmail, attachments?.Count() ?? 0);
+            logger.LogInformation(
+                "Email sent to {Recipient} with {AttachmentCount} attachment(s)",
+                maskedRecipient,
+                attachments?.Count() ?? 0);
         }
         catch (SmtpException ex)
         {
-            throw new InvalidOperationException($"SMTP error when sending email to {recipientEmail}", ex);
+            throw new InvalidOperationException($"SMTP error when sending email to {maskedRecipient}", ex);
         }
         catch (Exception ex)
         {
-            throw new InvalidOperationException($"Unexpected error when sending email to {recipientEmail}", ex);
+            throw new InvalidOperationException($"Unexpected error when sending email to {maskedRecipient}", ex);
         }
     }
 }

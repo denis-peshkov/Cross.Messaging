@@ -14,6 +14,7 @@ global using System.Text.Json;
 global using System.Text.Json.Serialization;
 global using System.Threading;
 global using System.Threading.Tasks;
+global using Cross.Messaging.Email;
 global using Cross.Messaging.Email.Options;
 global using Cross.Messaging.Email.Services;
 global using Cross.Messaging.Sms;

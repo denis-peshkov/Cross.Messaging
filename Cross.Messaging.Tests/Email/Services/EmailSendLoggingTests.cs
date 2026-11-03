@@ -1,4 +1,4 @@
-namespace Cross.Messaging.Tests.Email.Services;
+﻿namespace Cross.Messaging.Tests.Email.Services;
 
 [Category("Unit")]
 public sealed class EmailSendLoggingTests
@@ -34,6 +34,8 @@ public sealed class EmailSendLoggingTests
         var exceptionAssertion = await act.Should().ThrowAsync<InvalidOperationException>();
         exceptionAssertion.Which.InnerException.Should().BeOfType<SmtpException>();
         exceptionAssertion.Which.Message.Should().Contain("SMTP error");
+        exceptionAssertion.Which.Message.Should().Contain("d***@example.com");
+        exceptionAssertion.Which.Message.Should().NotContain("dest@example.com");
     }
 
     [Test]
@@ -50,6 +52,8 @@ public sealed class EmailSendLoggingTests
         var exceptionAssertion = await act.Should().ThrowAsync<InvalidOperationException>();
         exceptionAssertion.Which.InnerException.Should().BeSameAs(ex);
         exceptionAssertion.Which.Message.Should().Contain("Unexpected error");
+        exceptionAssertion.Which.Message.Should().Contain("d***@example.com");
+        exceptionAssertion.Which.Message.Should().NotContain("dest@example.com");
     }
 
     [Test]
