@@ -80,4 +80,72 @@ public sealed class SmsExtensionsTests
 
         sender.Should().BeOfType<SmsSenderService>();
     }
+
+    [Test]
+    public void AddSmsSender_ShouldRegisterOnlyConfiguredProviders()
+    {
+        var services = new ServiceCollection();
+        services.AddOptions();
+        services.AddSingleton<ILogger<SmsSenderService>>(NullLogger<SmsSenderService>.Instance);
+        services.AddSmsSender(BuildConfig());
+
+        using var provider = services.BuildServiceProvider();
+        using var scope = provider.CreateScope();
+        var smsProviders = scope.ServiceProvider.GetServices<ISmsProvider>().ToList();
+
+        smsProviders.Select(p => p.Name).Should().BeEquivalentTo("Telnyx", "SMSClub");
+    }
+
+    [Test]
+    public void AddSmsSender_WhenOnlyTelnyxConfigured_ShouldNotRegisterSmsClub()
+    {
+        var config = BuildConfig(d =>
+        {
+            var keys = d.Keys.Where(k => k.Contains(":Providers:SMSClub:", StringComparison.Ordinal)).ToList();
+            foreach (var key in keys)
+            {
+                d.Remove(key);
+            }
+        });
+
+        var services = new ServiceCollection();
+        services.AddOptions();
+        services.AddSingleton<ILogger<SmsSenderService>>(NullLogger<SmsSenderService>.Instance);
+        services.AddSmsSender(config);
+
+        using var provider = services.BuildServiceProvider();
+        using var scope = provider.CreateScope();
+        var smsProviders = scope.ServiceProvider.GetServices<ISmsProvider>().ToList();
+
+        smsProviders.Should().ContainSingle();
+        smsProviders[0].Name.Should().Be("Telnyx");
+        services.Any(s => s.ServiceType == typeof(SmsClubSmsProvider)).Should().BeFalse();
+    }
+
+    [Test]
+    public void AddSmsSender_WhenOnlySmsClubConfigured_ShouldNotRegisterTelnyx()
+    {
+        var config = BuildConfig(d =>
+        {
+            d[$"{MessagingSmsOptions.SectionName}:DefaultProvider"] = "SMSClub";
+            var keys = d.Keys.Where(k => k.Contains(":Providers:Telnyx:", StringComparison.Ordinal)).ToList();
+            foreach (var key in keys)
+            {
+                d.Remove(key);
+            }
+        });
+
+        var services = new ServiceCollection();
+        services.AddOptions();
+        services.AddSingleton<ILogger<SmsSenderService>>(NullLogger<SmsSenderService>.Instance);
+        services.AddSmsSender(config);
+
+        using var provider = services.BuildServiceProvider();
+        using var scope = provider.CreateScope();
+        var smsProviders = scope.ServiceProvider.GetServices<ISmsProvider>().ToList();
+
+        smsProviders.Should().ContainSingle();
+        smsProviders[0].Name.Should().Be("SMSClub");
+        services.Any(s => s.ServiceType == typeof(TelnyxSmsProvider)).Should().BeFalse();
+    }
 }

@@ -7,30 +7,57 @@ public static class SmsExtensions
 {
     /// <summary>
     /// Registers SMS sender services and binds <see cref="MessagingSmsOptions" />.
+    /// Only providers present under <c>MessagingSms:Providers</c> are registered.
     /// </summary>
     /// <param name="services">Application service collection.</param>
     /// <param name="configuration">Application configuration source.</param>
     /// <returns>The same <paramref name="services" /> instance for chaining.</returns>
     public static IServiceCollection AddSmsSender(this IServiceCollection services, IConfiguration configuration)
     {
-        services.Configure<MessagingSmsOptions>(configuration.GetSection(MessagingSmsOptions.SectionName));
+        var section = configuration.GetSection(MessagingSmsOptions.SectionName);
+        services.Configure<MessagingSmsOptions>(section);
 
-        services.AddHttpClient<TelnyxSmsProvider>(client =>
+        if (HasConfiguredProvider(section, "Telnyx"))
         {
-            client.BaseAddress = new Uri("https://api.telnyx.com/");
-        });
-        services.TryAddEnumerable(ServiceDescriptor.Scoped<ISmsProvider, TelnyxSmsProvider>(sp =>
-            sp.GetRequiredService<TelnyxSmsProvider>()));
+            services.AddHttpClient<TelnyxSmsProvider>(client =>
+            {
+                client.BaseAddress = new Uri("https://api.telnyx.com/");
+            });
+            services.TryAddEnumerable(ServiceDescriptor.Scoped<ISmsProvider, TelnyxSmsProvider>(sp =>
+                sp.GetRequiredService<TelnyxSmsProvider>()));
+        }
 
-        services.AddHttpClient<SmsClubSmsProvider>(client =>
+        if (HasConfiguredProvider(section, "SMSClub"))
         {
-            client.BaseAddress = new Uri("https://im.smsclub.mobi/");
-        });
-        services.TryAddEnumerable(ServiceDescriptor.Scoped<ISmsProvider, SmsClubSmsProvider>(sp =>
-            sp.GetRequiredService<SmsClubSmsProvider>()));
+            services.AddHttpClient<SmsClubSmsProvider>(client =>
+            {
+                client.BaseAddress = new Uri("https://im.smsclub.mobi/");
+            });
+            services.TryAddEnumerable(ServiceDescriptor.Scoped<ISmsProvider, SmsClubSmsProvider>(sp =>
+                sp.GetRequiredService<SmsClubSmsProvider>()));
+        }
 
         services.TryAddScoped<ISmsSenderService, SmsSenderService>();
 
         return services;
+    }
+
+    private static bool HasConfiguredProvider(IConfigurationSection section, string providerName)
+    {
+        if (string.Equals(section[nameof(MessagingSmsOptions.DefaultProvider)], providerName, StringComparison.OrdinalIgnoreCase))
+        {
+            return true;
+        }
+
+        var providersSection = section.GetSection(nameof(MessagingSmsOptions.Providers));
+        foreach (var child in providersSection.GetChildren())
+        {
+            if (string.Equals(child.Key, providerName, StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
