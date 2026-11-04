@@ -109,6 +109,49 @@ await emailSender.SendAsync(
 
 Entries with empty `Email` are ignored.
 
+### Register the SMS sender in DI
+
+```csharp
+services.AddSmsSender(configuration);
+```
+
+`AddSmsSender`:
+- binds the `MessagingSms` configuration section to `MessagingSmsOptions`
+- registers `ISmsSenderService` -> `SmsSenderService` (scoped)
+- registers only SMS providers listed under `MessagingSms:Providers` (for example Telnyx, SMSClub)
+
+`ISmsSenderService.SendAsync(destination, body, cancellationToken)` expects `destination` in E.164 (`+...`). The country is resolved from the calling code (longest-prefix match); NANP `+1` maps to `US`.
+
+`DefaultProvider` is used for all destinations unless the resolved country has an override in `CountryProviders` (list only exceptions there, not every country).
+
+### Sample SMS configuration
+
+```json
+{
+  "MessagingSms": {
+    "DefaultProvider": "Telnyx",
+    "CountryProviders": {
+      "RO": "SMSClub"
+    },
+    "Providers": {
+      "Telnyx": {
+        "ApiKey": "KEY",
+        "From": "+15551234567",
+        "MessagingProfileId": ""
+      },
+      "SMSClub": {
+        "ApiKey": "TOKEN",
+        "From": "MySender"
+      }
+    }
+  }
+}
+```
+
+`MessagingProfileId` is optional and used for Telnyx modes that require a messaging profile (for example number pool / alphanumeric sender).
+
+For SMSClub, `ApiKey` is the Bearer token and `From` is the alphanumeric sender name (`src_addr`).
+
 ## Unit tests
 
 Tests use the **Given_When_Then** naming style:
