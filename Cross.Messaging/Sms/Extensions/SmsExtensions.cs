@@ -9,6 +9,8 @@ public static class SmsExtensions
     /// Registers SMS sender services and binds <see cref="MessagingSmsOptions" />.
     /// Registers a provider only when it is referenced by <c>DefaultProvider</c> or
     /// <c>CountryProviders</c> and also has settings under <c>MessagingSms:Providers</c>.
+    /// Those references are evaluated once at startup; if a configuration reload later
+    /// points to a provider that was not registered then, restart the application.
     /// </summary>
     /// <param name="services">Application service collection.</param>
     /// <param name="configuration">Application configuration source.</param>
