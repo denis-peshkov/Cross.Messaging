@@ -82,7 +82,7 @@ public sealed class SmsExtensionsTests
     }
 
     [Test]
-    public void AddSmsSender_ShouldRegisterOnlyConfiguredProviders()
+    public void AddSmsSender_ShouldRegisterReferencedProvidersWithSettings()
     {
         var services = new ServiceCollection();
         services.AddOptions();
@@ -97,7 +97,52 @@ public sealed class SmsExtensionsTests
     }
 
     [Test]
-    public void AddSmsSender_WhenOnlyTelnyxConfigured_ShouldNotRegisterSmsClub()
+    public void AddSmsSender_WhenOnlyTelnyxReferenced_ShouldNotRegisterSmsClub()
+    {
+        var config = BuildConfig(d =>
+        {
+            d.Remove($"{MessagingSmsOptions.SectionName}:CountryProviders:RO");
+        });
+
+        var services = new ServiceCollection();
+        services.AddOptions();
+        services.AddSingleton<ILogger<SmsSenderService>>(NullLogger<SmsSenderService>.Instance);
+        services.AddSmsSender(config);
+
+        using var provider = services.BuildServiceProvider();
+        using var scope = provider.CreateScope();
+        var smsProviders = scope.ServiceProvider.GetServices<ISmsProvider>().ToList();
+
+        smsProviders.Should().ContainSingle();
+        smsProviders[0].Name.Should().Be("Telnyx");
+        services.Any(s => s.ServiceType == typeof(SmsClubSmsProvider)).Should().BeFalse();
+    }
+
+    [Test]
+    public void AddSmsSender_WhenOnlySmsClubReferenced_ShouldNotRegisterTelnyx()
+    {
+        var config = BuildConfig(d =>
+        {
+            d[$"{MessagingSmsOptions.SectionName}:DefaultProvider"] = "SMSClub";
+            d.Remove($"{MessagingSmsOptions.SectionName}:CountryProviders:RO");
+        });
+
+        var services = new ServiceCollection();
+        services.AddOptions();
+        services.AddSingleton<ILogger<SmsSenderService>>(NullLogger<SmsSenderService>.Instance);
+        services.AddSmsSender(config);
+
+        using var provider = services.BuildServiceProvider();
+        using var scope = provider.CreateScope();
+        var smsProviders = scope.ServiceProvider.GetServices<ISmsProvider>().ToList();
+
+        smsProviders.Should().ContainSingle();
+        smsProviders[0].Name.Should().Be("SMSClub");
+        services.Any(s => s.ServiceType == typeof(TelnyxSmsProvider)).Should().BeFalse();
+    }
+
+    [Test]
+    public void AddSmsSender_WhenReferencedButMissingProvidersSettings_ShouldNotRegister()
     {
         var config = BuildConfig(d =>
         {
@@ -123,16 +168,11 @@ public sealed class SmsExtensionsTests
     }
 
     [Test]
-    public void AddSmsSender_WhenOnlySmsClubConfigured_ShouldNotRegisterTelnyx()
+    public void AddSmsSender_WhenOnlyInProviders_ShouldNotRegisterUnreferenced()
     {
         var config = BuildConfig(d =>
         {
-            d[$"{MessagingSmsOptions.SectionName}:DefaultProvider"] = "SMSClub";
-            var keys = d.Keys.Where(k => k.Contains(":Providers:Telnyx:", StringComparison.Ordinal)).ToList();
-            foreach (var key in keys)
-            {
-                d.Remove(key);
-            }
+            d.Remove($"{MessagingSmsOptions.SectionName}:CountryProviders:RO");
         });
 
         var services = new ServiceCollection();
@@ -144,8 +184,9 @@ public sealed class SmsExtensionsTests
         using var scope = provider.CreateScope();
         var smsProviders = scope.ServiceProvider.GetServices<ISmsProvider>().ToList();
 
+        // SMSClub remains under Providers but is not referenced → not registered.
         smsProviders.Should().ContainSingle();
-        smsProviders[0].Name.Should().Be("SMSClub");
-        services.Any(s => s.ServiceType == typeof(TelnyxSmsProvider)).Should().BeFalse();
+        smsProviders[0].Name.Should().Be("Telnyx");
+        services.Any(s => s.ServiceType == typeof(SmsClubSmsProvider)).Should().BeFalse();
     }
 }

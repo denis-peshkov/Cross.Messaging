@@ -118,7 +118,7 @@ services.AddSmsSender(configuration);
 `AddSmsSender`:
 - binds the `MessagingSms` configuration section to `MessagingSmsOptions`
 - registers `ISmsSenderService` -> `SmsSenderService` (scoped)
-- registers only SMS providers listed under `MessagingSms:Providers` (for example Telnyx, SMSClub)
+- registers an SMS provider only when it is referenced by `DefaultProvider` or `CountryProviders` and also has settings under `MessagingSms:Providers`
 
 `ISmsSenderService.SendAsync(destination, body, cancellationToken)` expects `destination` in E.164 (`+...`). The country is resolved from the calling code (longest-prefix match); NANP `+1` maps to `US`.
 
