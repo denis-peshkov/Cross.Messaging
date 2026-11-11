@@ -37,3 +37,6 @@ v2.1.0 - 08 May 2026
 - Email API: added priority overloads for `SendAsync(...)` and `SendAsyncWithContentIds(...)`, plus `SendAsync(...)` overloads without attachments.
 - Tests: added category tags (`Unit`, `Integration`) and expanded service tests for new overloads.
 - Documentation: updated README examples for API, categories, and category-based test execution.
+
+v2.4.0 - 11 Nov 2026
+- Email: added `CheckCertificateRevocation` to `MessagingEmail` (default `true`); applied to MailKit `SmtpClient` before connect.

@@ -1,4 +1,4 @@
-namespace Cross.Messaging.Tests.Email.Options;
+﻿namespace Cross.Messaging.Tests.Email.Options;
 
 [Category("Unit")]
 public sealed class MessagingEmailOptionsTests
@@ -17,6 +17,7 @@ public sealed class MessagingEmailOptionsTests
         o.SmtpHost.Should().BeNull();
         o.SmtpPort.Should().Be(0);
         o.UseSsl.Should().BeFalse();
+        o.CheckCertificateRevocation.Should().BeTrue();
         o.SmtpLogin.Should().BeNull();
         o.SmtpPassword.Should().BeNull();
         o.FromUserName.Should().BeNull();

@@ -90,6 +90,7 @@ await emailSender.SendAsync(
     "SmtpPort": 587,
     "UseSsl": true,
     "SecureSocket": "StartTls",
+    "CheckCertificateRevocation": true,
     "SmtpLogin": "login",
     "SmtpPassword": "password",
     "FromUserName": "App Messaging",
@@ -104,6 +105,8 @@ await emailSender.SendAsync(
   }
 }
 ```
+
+`CheckCertificateRevocation` applies to MailKit send flows (text+HTML / attachments). Default is `true`. Set to `false` only when CRL/OCSP checks fail in constrained networks (for example local/VPN).
 
 `BccRecipients` is optional; when configured, each entry is added to outgoing messages as BCC.
 

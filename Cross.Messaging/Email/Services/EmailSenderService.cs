@@ -1,4 +1,4 @@
-namespace Cross.Messaging.Email.Services;
+﻿namespace Cross.Messaging.Email.Services;
 
 /// <inheritdoc />
 public class EmailSenderService : IEmailSenderService
@@ -185,7 +185,7 @@ public class EmailSenderService : IEmailSenderService
         // Note: mail clients choose whether to show HTML or plain text
         message.Body = builder.ToMessageBody();
 
-        using var smtp = new MailKit.Net.Smtp.SmtpClient();
+        using var smtp = CreateMailKitSmtpClient();
         await smtp.ConnectAsync(_options.SmtpHost, _options.SmtpPort, _options.SecureSocket, cancellationToken);
         if (smtp.Capabilities.HasFlag(MailKit.Net.Smtp.SmtpCapabilities.Authentication) &&
             !string.IsNullOrWhiteSpace(_options.SmtpLogin) &&
@@ -300,7 +300,7 @@ public class EmailSenderService : IEmailSenderService
         // Note: mail clients choose whether to show HTML or plain text
         message.Body = builder.ToMessageBody();
 
-        using var smtp = new MailKit.Net.Smtp.SmtpClient();
+        using var smtp = CreateMailKitSmtpClient();
         await smtp.ConnectAsync(_options.SmtpHost, _options.SmtpPort, _options.SecureSocket, cancellationToken);
         if (smtp.Capabilities.HasFlag(MailKit.Net.Smtp.SmtpCapabilities.Authentication) &&
             !string.IsNullOrWhiteSpace(_options.SmtpLogin) &&
@@ -325,6 +325,12 @@ public class EmailSenderService : IEmailSenderService
 
         return resultContentIdMap;
     }
+
+    private MailKit.Net.Smtp.SmtpClient CreateMailKitSmtpClient()
+        => new()
+        {
+            CheckCertificateRevocation = _options.CheckCertificateRevocation,
+        };
 
     private void AddConfiguredBccRecipients(MimeMessage message)
     {

@@ -1,4 +1,4 @@
-namespace Cross.Messaging.Email.Options;
+﻿namespace Cross.Messaging.Email.Options;
 
 /// <summary>
 /// Configuration options for email sender services.
@@ -32,6 +32,13 @@ public class MessagingEmailOptions
     /// _   => SecureSocketOptions.Auto
     /// </summary>
     public SecureSocketOptions SecureSocket { get; set; }
+
+    /// <summary>
+    /// Whether MailKit SSL/TLS connections should check certificate revocation (CRL/OCSP).
+    /// Defaults to <c>true</c>. Set to <c>false</c> only when revocation checks fail in constrained networks (for example local/VPN).
+    /// Applies to MailKit send flows (text+HTML / attachments); not used by <see cref="SmtpClient" />.
+    /// </summary>
+    public bool CheckCertificateRevocation { get; set; } = true;
 
     /// <summary>
     /// SMTP account login.
