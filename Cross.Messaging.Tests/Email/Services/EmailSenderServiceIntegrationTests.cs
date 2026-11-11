@@ -1,4 +1,4 @@
-namespace Cross.Messaging.Tests.Email.Services;
+﻿namespace Cross.Messaging.Tests.Email.Services;
 
 [Category("Integration")]
 public sealed class EmailSenderServiceIntegrationTests
@@ -68,6 +68,23 @@ public sealed class EmailSenderServiceIntegrationTests
                 It.IsAny<Exception>(),
                 It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
             Times.Once);
+    }
+
+    [Test]
+    [Timeout(60_000)]
+    public async Task SendAsync_WithTextAndHtml_WhenCheckCertificateRevocationDisabled_DeliversToServer()
+    {
+        using var server = SimpleSmtpServer.Start();
+        var port = server.Configuration.Port;
+
+        var options = BuildOptions(port, secureSocket: SecureSocketOptions.None, checkCertificateRevocation: false);
+
+        var logger = new Mock<ILogger<EmailSenderService>>();
+        var sut = new EmailSenderService(logger.Object, options.Object);
+
+        await sut.SendAsync("Recipient", "dest2@example.com", "Subj", "plain", "<b>html</b>", null, CancellationToken.None);
+
+        Assert.That(server.ReceivedEmailCount, Is.EqualTo(1));
     }
 
     [Test]
@@ -279,7 +296,8 @@ public sealed class EmailSenderServiceIntegrationTests
         SecureSocketOptions secureSocket = SecureSocketOptions.None,
         string? recipientOverride = null,
         string login = "u",
-        string password = "p")
+        string password = "p",
+        bool checkCertificateRevocation = true)
     {
         var options = new Mock<IOptionsSnapshot<MessagingEmailOptions>>();
         options.Setup(o => o.Value).Returns(new MessagingEmailOptions
@@ -288,6 +306,7 @@ public sealed class EmailSenderServiceIntegrationTests
             SmtpPort = port,
             UseSsl = useSsl,
             SecureSocket = secureSocket,
+            CheckCertificateRevocation = checkCertificateRevocation,
             SmtpLogin = login,
             SmtpPassword = password,
             FromUserName = "Bot",

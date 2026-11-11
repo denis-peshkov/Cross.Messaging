@@ -1,4 +1,4 @@
-namespace Cross.Messaging.Tests.Email.Extensions;
+﻿namespace Cross.Messaging.Tests.Email.Extensions;
 
 [Category("Unit")]
 public sealed class EmailExtensionsTests
@@ -49,6 +49,30 @@ public sealed class EmailExtensionsTests
         var options = provider.GetRequiredService<IOptions<MessagingEmailOptions>>().Value;
 
         options.RecipientOverride.Should().Be("override@example.com");
+    }
+
+    [Test]
+    public void AddEmailSender_ShouldDefaultCheckCertificateRevocationToTrue_WhenNotConfigured()
+    {
+        var services = new ServiceCollection();
+        services.AddEmailSender(BuildConfig());
+        using var provider = services.BuildServiceProvider();
+        var options = provider.GetRequiredService<IOptions<MessagingEmailOptions>>().Value;
+
+        options.CheckCertificateRevocation.Should().BeTrue();
+    }
+
+    [Test]
+    public void AddEmailSender_ShouldBindCheckCertificateRevocation_WhenPresent()
+    {
+        var services = new ServiceCollection();
+        var config = BuildConfig(d => d[$"{MessagingEmailOptions.SectionName}:CheckCertificateRevocation"] = "false");
+
+        services.AddEmailSender(config);
+        using var provider = services.BuildServiceProvider();
+        var options = provider.GetRequiredService<IOptions<MessagingEmailOptions>>().Value;
+
+        options.CheckCertificateRevocation.Should().BeFalse();
     }
 
     [Test]
