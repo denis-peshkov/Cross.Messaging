@@ -63,12 +63,24 @@ public sealed class SmsClubSmsProvider : ISmsProvider
         }
 
         var info = parsed?.SuccessRequest?.Info;
-        if (info is null || info.Count == 0)
+        if (info is not null && info.Count > 0)
         {
-            throw new InvalidOperationException("SMSClub SMS send succeeded but message id is missing.");
+            return info.Keys.First();
         }
 
-        return info.Keys.First();
+        var addInfo = parsed?.SuccessRequest?.AddInfo;
+        if (addInfo is not null && addInfo.Count > 0)
+        {
+            throw new InvalidOperationException(
+                $"SMSClub SMS send failed: {Truncate(FormatAddInfo(addInfo))}");
+        }
+
+        throw new InvalidOperationException("SMSClub SMS send succeeded but message id is missing.");
+    }
+
+    private static string FormatAddInfo(IReadOnlyDictionary<string, string> addInfo)
+    {
+        return string.Join("; ", addInfo.Select(pair => $"{PhoneDestinationMask.MaskIfPhone(pair.Key)}: {pair.Value}"));
     }
 
     private const int MaxErrorResponseLength = 512;

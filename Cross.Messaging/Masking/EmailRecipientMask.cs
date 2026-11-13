@@ -1,4 +1,4 @@
-﻿namespace Cross.Messaging.Email;
+﻿namespace Cross.Messaging.Masking;
 
 /// <summary>
 /// Masks email addresses for logging and exception messages.

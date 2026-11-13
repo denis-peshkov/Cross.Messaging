@@ -15,6 +15,7 @@ global using Cross.Messaging.Email;
 global using Cross.Messaging.Email.Extensions;
 global using Cross.Messaging.Email.Options;
 global using Cross.Messaging.Email.Services;
+global using Cross.Messaging.Masking;
 global using Cross.Messaging.Sms;
 global using Cross.Messaging.Sms.Extensions;
 global using Cross.Messaging.Sms.Options;
