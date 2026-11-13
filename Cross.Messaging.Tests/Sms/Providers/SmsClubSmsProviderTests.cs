@@ -91,7 +91,7 @@ public sealed class SmsClubSmsProviderTests
     }
 
     [Test]
-    public async Task SendAsync_WhenInfoMissing_ThrowsInvalidOperationException()
+    public async Task SendAsync_WhenAddInfoOnly_ThrowsWithAddInfoDetails()
     {
         var handler = new Mock<HttpMessageHandler>();
         handler.Protected()
@@ -113,6 +113,70 @@ public sealed class SmsClubSmsProviderTests
         {
             ApiKey = "TOKEN",
             From = "Bad",
+        };
+
+        var act = () => sut.SendAsync("+40721234567", "hello", options, CancellationToken.None);
+
+        var exception = await act.Should().ThrowAsync<InvalidOperationException>();
+        exception.Which.Message.Should().Contain("src_addr");
+        exception.Which.Message.Should().Contain("Sender name is incorrect");
+        exception.Which.Message.Should().NotContain("message id is missing");
+    }
+
+    [Test]
+    public async Task SendAsync_WhenPhoneRejectedInAddInfo_ThrowsWithPhoneError()
+    {
+        var handler = new Mock<HttpMessageHandler>();
+        handler.Protected()
+            .Setup<Task<HttpResponseMessage>>(
+                "SendAsync",
+                ItExpr.IsAny<HttpRequestMessage>(),
+                ItExpr.IsAny<CancellationToken>())
+            .ReturnsAsync(new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StringContent(
+                    """{"success_request":{"add_info":{"40721234567":"Number is blacklisted"}}}"""),
+            });
+
+        var sut = new SmsClubSmsProvider(new HttpClient(handler.Object)
+        {
+            BaseAddress = new Uri("https://im.smsclub.mobi/"),
+        });
+        var options = new MessagingSmsProviderOptions
+        {
+            ApiKey = "TOKEN",
+            From = "MySender",
+        };
+
+        var act = () => sut.SendAsync("+40721234567", "hello", options, CancellationToken.None);
+
+        var exception = await act.Should().ThrowAsync<InvalidOperationException>();
+        exception.Which.Message.Should().Contain("40721234567");
+        exception.Which.Message.Should().Contain("Number is blacklisted");
+    }
+
+    [Test]
+    public async Task SendAsync_WhenInfoAndAddInfoMissing_ThrowsMessageIdMissing()
+    {
+        var handler = new Mock<HttpMessageHandler>();
+        handler.Protected()
+            .Setup<Task<HttpResponseMessage>>(
+                "SendAsync",
+                ItExpr.IsAny<HttpRequestMessage>(),
+                ItExpr.IsAny<CancellationToken>())
+            .ReturnsAsync(new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StringContent("""{"success_request":{}}"""),
+            });
+
+        var sut = new SmsClubSmsProvider(new HttpClient(handler.Object)
+        {
+            BaseAddress = new Uri("https://im.smsclub.mobi/"),
+        });
+        var options = new MessagingSmsProviderOptions
+        {
+            ApiKey = "TOKEN",
+            From = "MySender",
         };
 
         var act = () => sut.SendAsync("+40721234567", "hello", options, CancellationToken.None);
