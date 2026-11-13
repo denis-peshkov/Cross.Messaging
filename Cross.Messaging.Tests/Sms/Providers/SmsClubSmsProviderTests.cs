@@ -151,7 +151,8 @@ public sealed class SmsClubSmsProviderTests
         var act = () => sut.SendAsync("+40721234567", "hello", options, CancellationToken.None);
 
         var exception = await act.Should().ThrowAsync<InvalidOperationException>();
-        exception.Which.Message.Should().Contain("40721234567");
+        exception.Which.Message.Should().Contain("+40*****4567");
+        exception.Which.Message.Should().NotContain("40721234567");
         exception.Which.Message.Should().Contain("Number is blacklisted");
     }
 

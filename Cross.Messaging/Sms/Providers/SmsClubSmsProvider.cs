@@ -80,7 +80,7 @@ public sealed class SmsClubSmsProvider : ISmsProvider
 
     private static string FormatAddInfo(IReadOnlyDictionary<string, string> addInfo)
     {
-        return string.Join("; ", addInfo.Select(pair => $"{pair.Key}: {pair.Value}"));
+        return string.Join("; ", addInfo.Select(pair => $"{PhoneDestinationMask.MaskIfPhone(pair.Key)}: {pair.Value}"));
     }
 
     private const int MaxErrorResponseLength = 512;

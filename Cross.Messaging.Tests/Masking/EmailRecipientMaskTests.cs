@@ -1,4 +1,4 @@
-﻿namespace Cross.Messaging.Tests.Email;
+﻿namespace Cross.Messaging.Tests.Masking;
 
 [Category("Unit")]
 public sealed class EmailRecipientMaskTests
