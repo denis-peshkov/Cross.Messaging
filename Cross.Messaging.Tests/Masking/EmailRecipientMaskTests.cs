@@ -24,4 +24,20 @@ public sealed class EmailRecipientMaskTests
         masked.Should().Be("d***@example.com");
         masked.Should().NotContain("est");
     }
+
+    [TestCase(null)]
+    [TestCase("")]
+    [TestCase("   ")]
+    public void Mask_WhenNullOrWhitespace_ReturnsSame(string? email)
+    {
+        EmailRecipientMask.Mask(email!).Should().Be(email);
+    }
+
+    [TestCase("not-an-email")]
+    [TestCase("@example.com")]
+    [TestCase("local@")]
+    public void Mask_WhenInvalidEmail_ReturnsStars(string email)
+    {
+        EmailRecipientMask.Mask(email).Should().Be("***");
+    }
 }

@@ -197,4 +197,88 @@ public sealed class SmsClubSmsProviderTests
         await act.Should().ThrowAsync<InvalidOperationException>()
             .WithMessage("*ApiKey*");
     }
+
+    [Test]
+    public async Task SendAsync_WhenOptionsNull_ThrowsArgumentNullException()
+    {
+        var sut = new SmsClubSmsProvider(new HttpClient());
+
+        var act = () => sut.SendAsync("+40721234567", "hello", null!, CancellationToken.None);
+
+        await act.Should().ThrowAsync<ArgumentNullException>()
+            .WithParameterName("options");
+    }
+
+    [Test]
+    public async Task SendAsync_WhenFromMissing_ThrowsInvalidOperationException()
+    {
+        var sut = new SmsClubSmsProvider(new HttpClient());
+        var options = new MessagingSmsProviderOptions { ApiKey = "TOKEN" };
+
+        var act = () => sut.SendAsync("+40721234567", "hello", options, CancellationToken.None);
+
+        await act.Should().ThrowAsync<InvalidOperationException>()
+            .WithMessage("*From*");
+    }
+
+    [Test]
+    public async Task SendAsync_WhenResponseJsonInvalid_ThrowsInvalidOperationException()
+    {
+        var handler = new Mock<HttpMessageHandler>();
+        handler.Protected()
+            .Setup<Task<HttpResponseMessage>>(
+                "SendAsync",
+                ItExpr.IsAny<HttpRequestMessage>(),
+                ItExpr.IsAny<CancellationToken>())
+            .ReturnsAsync(new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StringContent("{not-json", Encoding.UTF8, "application/json"),
+            });
+
+        var sut = new SmsClubSmsProvider(new HttpClient(handler.Object)
+        {
+            BaseAddress = new Uri("https://im.smsclub.mobi/"),
+        });
+        var options = new MessagingSmsProviderOptions
+        {
+            ApiKey = "TOKEN",
+            From = "MySender",
+        };
+
+        var act = () => sut.SendAsync("+40721234567", "hello", options, CancellationToken.None);
+
+        await act.Should().ThrowAsync<InvalidOperationException>()
+            .WithMessage("*response JSON is invalid*");
+    }
+
+    [Test]
+    public async Task SendAsync_WhenErrorResponseBodyEmpty_ThrowsWithoutBodySnippet()
+    {
+        var handler = new Mock<HttpMessageHandler>();
+        handler.Protected()
+            .Setup<Task<HttpResponseMessage>>(
+                "SendAsync",
+                ItExpr.IsAny<HttpRequestMessage>(),
+                ItExpr.IsAny<CancellationToken>())
+            .ReturnsAsync(new HttpResponseMessage(HttpStatusCode.BadGateway)
+            {
+                Content = new StringContent(string.Empty),
+            });
+
+        var sut = new SmsClubSmsProvider(new HttpClient(handler.Object)
+        {
+            BaseAddress = new Uri("https://im.smsclub.mobi/"),
+        });
+        var options = new MessagingSmsProviderOptions
+        {
+            ApiKey = "TOKEN",
+            From = "MySender",
+        };
+
+        var act = () => sut.SendAsync("+40721234567", "hello", options, CancellationToken.None);
+
+        var exception = await act.Should().ThrowAsync<InvalidOperationException>();
+        exception.Which.Message.Should().Contain("502");
+        exception.Which.Message.Should().EndWith("Response: ");
+    }
 }

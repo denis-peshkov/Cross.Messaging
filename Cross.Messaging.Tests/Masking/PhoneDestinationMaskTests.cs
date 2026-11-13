@@ -67,4 +67,48 @@ public sealed class PhoneDestinationMaskTests
     {
         PhoneDestinationMask.LooksLikePhoneNumber(null!).Should().BeFalse();
     }
+
+    [TestCase(null)]
+    [TestCase("")]
+    [TestCase("   ")]
+    public void Mask_WhenNullOrWhitespace_ReturnsSame(string? destination)
+    {
+        PhoneDestinationMask.Mask(destination!).Should().Be(destination);
+    }
+
+    [Test]
+    public void Mask_WhenShortNationalNumber_MasksEntireNationalPart()
+    {
+        PhoneDestinationMask.Mask("+40123").Should().Be("+40***");
+    }
+
+    [Test]
+    public void Mask_WhenUnknownCallingCode_MasksWithPlusFallback()
+    {
+        var masked = PhoneDestinationMask.Mask("+99912345678");
+
+        masked.Should().StartWith("+");
+        masked.Should().EndWith("5678");
+        masked.Should().NotContain("999123");
+    }
+
+    [Test]
+    public void Mask_WhenNotPhoneLike_ReturnsStars()
+    {
+        PhoneDestinationMask.Mask("abc").Should().Be("***");
+    }
+
+    [TestCase(null)]
+    [TestCase("")]
+    [TestCase("   ")]
+    public void NormalizeToE164_WhenNullOrWhitespace_ReturnsSame(string? value)
+    {
+        PhoneDestinationMask.NormalizeToE164(value!).Should().Be(value);
+    }
+
+    [Test]
+    public void LooksLikePhoneNumber_WhenOnlyPlus_ReturnsFalse()
+    {
+        PhoneDestinationMask.LooksLikePhoneNumber("+").Should().BeFalse();
+    }
 }
